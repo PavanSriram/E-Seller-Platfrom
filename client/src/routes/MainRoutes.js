@@ -5,7 +5,8 @@ import MainLayout from '../layout/MainLayout';
 import Loadable from '../ui-component/Loadable.js';
 
 // dashboard routing
-const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default')));
+const UserDashboard = Loadable(lazy(() => import('../views/userDashboard/UserDashboard.js')));
+const SellerDashboard = Loadable(lazy(() => import('../views/sellerDashboard/SellerDashboard.js')));
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography.js')));
@@ -24,12 +25,16 @@ const MainRoutes = {
     element: <MainLayout />,
     children: [
         {
-            path: '/',
-            element: <DashboardDefault />
+            path: '/seller/dashboard',
+            element: <SellerDashboard />
         },
+        // {
+        //     path: '/dashboard/default',
+        //     element: <DashboardDefault />
+        // },
         {
-            path: '/dashboard/default',
-            element: <DashboardDefault />
+            path: '/user/dashboard',
+            element: <UserDashboard />
         },
         {
             path: '/utils/util-typography',

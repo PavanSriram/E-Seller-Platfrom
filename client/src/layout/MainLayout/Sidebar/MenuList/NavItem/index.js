@@ -8,8 +8,8 @@ import { useTheme } from '@mui/material/styles';
 import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery } from '@mui/material';
 
 // project imports
-import { MENU_OPEN, SET_MENU } from 'store/actions';
-import config from 'config';
+import { MENU_OPEN, SET_MENU } from '../../../../../store/actions';
+import config from '../../../../../config';
 
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';

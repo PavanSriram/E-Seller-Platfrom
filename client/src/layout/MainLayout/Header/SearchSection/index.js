@@ -9,7 +9,7 @@ import { Avatar, Box, ButtonBase, Card, Grid, InputAdornment, OutlinedInput, Pop
 import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 
 // project imports
-import Transitions from 'ui-component/extended/Transitions';
+import Transitions from '../../../../ui-component/extended/Transitions';
 
 // assets
 import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons';
@@ -172,15 +172,15 @@ const SearchSection = () => {
                             <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
                         </InputAdornment>
                     }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <ButtonBase sx={{ borderRadius: '12px' }}>
-                                <HeaderAvatarStyle variant="rounded">
-                                    <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
-                                </HeaderAvatarStyle>
-                            </ButtonBase>
-                        </InputAdornment>
-                    }
+                    // endAdornment={
+                    //     <InputAdornment position="end">
+                    //         <ButtonBase sx={{ borderRadius: '12px' }}>
+                    //             <HeaderAvatarStyle variant="rounded">
+                    //                 <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
+                    //             </HeaderAvatarStyle>
+                    //         </ButtonBase>
+                    //     </InputAdornment>
+                    // }
                     aria-describedby="search-helper-text"
                     inputProps={{ 'aria-label': 'weight' }}
                 />

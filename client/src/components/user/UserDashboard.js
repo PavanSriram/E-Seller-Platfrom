@@ -1,4 +1,4 @@
-import Dashboard from "./dashboard/Dashboard";
+import Dashboard from "./userDashboard/Dashboard";
 
 function UserDashboard() {
   return (

@@ -12,20 +12,22 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import Fab from "@mui/material/Fab";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
 import { Stack } from "@mui/material";
-import {
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon,
-} from "@mui/material";
+import { Button } from "@mui/material";
+import {TextField, InputAdornment, SvgIcon,} from "@mui/material";
 import { createSvgIcon } from "@mui/material/utils";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import SearchBy from "./searchBy";
 
@@ -81,32 +83,32 @@ const MyProductToolbar = (props) => {
       <Box sx={{ mt: 5, mb: 3 }}>
         {/* <Card>
           <CardContent> */}
-            <Stack direction={"row"}>
-              <Box sx={{ maxWidth: 800, minWidth: 400 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SvgIcon fontSize="small" color="action">
-                          <Search />
-                        </SvgIcon>
-                      </InputAdornment>
-                    ),
-                  }}
-                  placeholder={props.searchBy}
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={{ml: 2}}>
-                <SearchBy
-                  searchBy={props.searchBy}
-                  handleSearchBy={props.handleSearchBy}
-                />
-              </Box>
-            </Stack>
-          {/* </CardContent>
+        <Stack direction={"row"}>
+          <Box sx={{ maxWidth: 800, minWidth: 400 }}>
+            <TextField
+              fullWidth
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon fontSize="small" color="action">
+                      <Search />
+                    </SvgIcon>
+                  </InputAdornment>
+                ),
+              }}
+              placeholder={props.searchBy}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ ml: 2 }}>
+            <SearchBy
+              searchBy={props.searchBy}
+              handleSearchBy={props.handleSearchBy}
+            />
+          </Box>
+        </Stack>
+        {/* </CardContent>
         </Card> */}
       </Box>
     </Toolbar>
@@ -117,7 +119,7 @@ export default function MyProduct() {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchBy, setSearchBy] = React.useState("Product Name");
   const [headCells, setHeadCells] = React.useState([
@@ -149,8 +151,7 @@ export default function MyProduct() {
   ]);
 
   const handleSearchBy = (searchby) => {
-    if(searchby)
-      setSearchBy(searchby);
+    if (searchby) setSearchBy(searchby);
   };
 
   const handleSortClick = (id) => {
@@ -178,6 +179,25 @@ export default function MyProduct() {
     setDense(event.target.checked);
   };
 
+  // add primary key of product to the path
+  const handleEditButton = () => {
+    navigate("/seller/editproduct");
+  };
+
+
+  // Delete dialog code
+  const [deleteOpen, setdeleteOpen] = React.useState(false);
+
+  const handleDeleteClose = () => {
+    setdeleteOpen(false);
+  };
+
+  const handleDeleteButton = () => {
+    setdeleteOpen(true);
+  };
+  
+
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -185,10 +205,7 @@ export default function MyProduct() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <MyProductToolbar
-          searchBy={searchBy}
-          handleSearchBy={handleSearchBy}
-        />
+        <MyProductToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -201,7 +218,7 @@ export default function MyProduct() {
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
-                    align={"left"}
+                    align={headCell.id === "productName" ? "left" : "right"}
                     padding={headCell.id === "productName" ? "none" : "normal"}
                   >
                     <TableSortLabel
@@ -237,12 +254,27 @@ export default function MyProduct() {
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.calories}</TableCell>
-                      <TableCell align="left">{row.fat}</TableCell>
-                      <TableCell align="left">{row.carbs}</TableCell>
-                      <TableCell align="left">{row.protein}</TableCell>
-                      <TableCell align="left">
-                        <EditIcon />
+                      <TableCell align="right">{row.calories}</TableCell>
+                      <TableCell align="right">{row.fat}</TableCell>
+                      <TableCell align="right">{row.carbs}</TableCell>
+                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          size="small"
+                          onClick={handleEditButton}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          size="small"
+                          onClick={handleDeleteButton}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   );
@@ -270,12 +302,12 @@ export default function MyProduct() {
         />
       </Paper>
       <FormControlLabel
-        sx={{ml: 5}}
+        sx={{ ml: 5 }}
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
       <Fab
-        sx={{ position: "absolute", bottom: 50, right: 45}}
+        sx={{ position: "absolute", bottom: 50, right: 45 }}
         color="primary"
         variant="extended"
         aria-label="add"
@@ -284,6 +316,31 @@ export default function MyProduct() {
         <AddIcon sx={{ mr: 1 }} />
         Add Product
       </Fab>
+
+      {/*Delete dialog box */}
+      <div>
+        <Dialog
+          open={deleteOpen}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Do you really want to delete the product?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteClose}>NO</Button>
+            <Button onClick={handleDeleteClose} autoFocus>
+              YES
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </Box>
   );
 }

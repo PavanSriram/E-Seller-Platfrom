@@ -21,13 +21,14 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
 import { Stack } from "@mui/material";
 import { Button } from "@mui/material";
-import {TextField, InputAdornment, SvgIcon,} from "@mui/material";
+import { TextField, InputAdornment, SvgIcon } from "@mui/material";
 import { createSvgIcon } from "@mui/material/utils";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Link } from "@mui/material";
 
 import SearchBy from "./searchBy";
 
@@ -184,7 +185,6 @@ export default function MyProduct() {
     navigate("/seller/editproduct");
   };
 
-
   // Delete dialog code
   const [deleteOpen, setdeleteOpen] = React.useState(false);
 
@@ -195,8 +195,6 @@ export default function MyProduct() {
   const handleDeleteButton = () => {
     setdeleteOpen(true);
   };
-  
-
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -216,21 +214,23 @@ export default function MyProduct() {
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    align={headCell.id === "productName" ? "left" : "right"}
-                    padding={headCell.id === "productName" ? "none" : "normal"}
-                  >
-                    <TableSortLabel
-                      direction={headCell.order}
-                      active="true"
-                      onClick={() => handleSortClick(headCell.id)}
+                    <TableCell
+                      key={headCell.id}
+                      align={headCell.id === "productName" ? "left" : "right"}
+                      padding={
+                        headCell.id === "productName" ? "none" : "normal"
+                      }
                     >
-                      <Typography fontSize={"18px"} fontWeight="600">
-                        {headCell.label}
-                      </Typography>
-                    </TableSortLabel>
-                  </TableCell>
+                      <TableSortLabel
+                        direction={headCell.order}
+                        active="true"
+                        onClick={() => handleSortClick(headCell.id)}
+                      >
+                        <Typography fontSize={"18px"} fontWeight="600">
+                          {headCell.label}
+                        </Typography>
+                      </TableSortLabel>
+                    </TableCell>
                 ))}
                 <TableCell></TableCell>
               </TableRow>
@@ -252,8 +252,9 @@ export default function MyProduct() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        <Link href="/seller/product" underline="none">{row.name}</Link>
                       </TableCell>
+                      
                       <TableCell align="right">{row.calories}</TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
                       <TableCell align="right">{row.carbs}</TableCell>
@@ -329,9 +330,7 @@ export default function MyProduct() {
             {"Do you really want to delete the product?"}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description"></DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDeleteClose}>NO</Button>

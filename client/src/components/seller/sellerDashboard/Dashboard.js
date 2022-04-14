@@ -117,11 +117,11 @@ const DashboardContent = (props) => {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItemButton>
-      <ListItemButton>
+      <ListItemButton onClick={() => navigate("/seller/orders")}>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
-        <ListItemText primary="Orders" />
+        <ListItemText primary="Orders"/>
       </ListItemButton>
       <ListItemButton> 
         <ListItemIcon>
@@ -143,7 +143,7 @@ const DashboardContent = (props) => {
       {/* <ListSubheader component="div" inset>
         Saved reports
       </ListSubheader> */}
-      <ListItemButton onClick={() => navigate("/seller/myproducts") } >
+      <ListItemButton onClick={() => navigate("/seller/myproducts")} >
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

@@ -20,6 +20,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "./listItems";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
+import SearchBar from "../SearchBar";
+import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
+import CategoryDropdown from "../CategoryDropdown";
 
 function Copyright(props) {
   return (
@@ -87,7 +91,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function DashboardContent(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -124,11 +128,17 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <SearchBar />
+            {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
+            </IconButton> */}
+            {/* <Tooltip title="Open settings"> */}
+            <IconButton sx={{ p: 0 }}>
+              <Avatar alt="p" src="/static/images/avatar/2.jpg" />
             </IconButton>
+            {/* </Tooltip> */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -164,47 +174,41 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                ></Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <Orders />
-                </Paper>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
+
+          <Container
+            sx={{
+              display: "flex",
+              marginTop: "10px",
+              // marginLeft: "10vw",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                // marginTop: "10px",
+                marginLeft: "7.5vw",
+                justifyItems: "center",
+                alignItems: "center",
+                // backgroundColor: "blue",
+              }}
+            >
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+            </Box>
           </Container>
+
+          {props.child}
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
+export default function Dashboard(props) {
+  return <DashboardContent child={props.child} />;
 }

@@ -16,7 +16,7 @@ import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function AddProduct(props) {
-  const [alertOpen, setAlertOpen] = React.useState(true);
+  const [alertOpen, setAlertOpen] = React.useState(false);
   let defaultValues = {
     productName: "",
     brand: "",

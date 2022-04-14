@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Deposits from "./Deposits";
-import Orders from "./Orders";
+// import Orders from "./Orders";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 
@@ -56,7 +56,7 @@ function DashboardHome() {
         {/* Recent Orders */}
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <Orders />
+            {/* <Orders /> */}
           </Paper>
         </Grid>
       </Grid>

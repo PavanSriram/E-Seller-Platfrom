@@ -62,6 +62,7 @@ export default function AddProduct(props) {
       description: "",
       price: "",
       quantity: "",
+      // if discount Id is added check if it is present in discounts table, else print error
       discountId: "",
       dimensions: "",
     };

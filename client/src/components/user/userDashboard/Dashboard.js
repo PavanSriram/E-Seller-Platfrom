@@ -23,7 +23,7 @@ import Orders from "./Orders";
 import SearchBar from "../SearchBar";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
-import CategoryDropdown from "../CategoryDropdown";
+
 
 function Copyright(props) {
   return (
@@ -174,34 +174,6 @@ function DashboardContent(props) {
           }}
         >
           <Toolbar />
-
-          <Container
-            sx={{
-              display: "flex",
-              marginTop: "10px",
-              // marginLeft: "10vw",
-              alignItems: "center",
-              // backgroundColor: "red",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                // marginTop: "10px",
-                marginLeft: "7.5vw",
-                justifyItems: "center",
-                alignItems: "center",
-                // backgroundColor: "blue",
-              }}
-            >
-              <CategoryDropdown />
-              <CategoryDropdown />
-              <CategoryDropdown />
-              <CategoryDropdown />
-              <CategoryDropdown />
-            </Box>
-          </Container>
-
           {props.child}
         </Box>
       </Box>

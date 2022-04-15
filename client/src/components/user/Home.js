@@ -3,7 +3,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import ItemCard from "./ItemCard";
-
+import CategoryDropdown from './CategoryDropdown';
+import Box from '@mui/material/Box';
 import { useState } from 'react';
 
 // import Deposits from "./Deposits";
@@ -14,7 +15,33 @@ function Home() {
 
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
+      <Container
+            sx={{
+              display: "flex",
+              mb: 2,
+              // marginLeft: "10vw",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                // marginTop: "10px",
+                marginLeft: "7.5vw",
+                justifyItems: "center",
+                alignItems: "center",
+                // backgroundColor: "blue",
+              }}
+            >
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+              <CategoryDropdown />
+            </Box>
+          </Container>
     <Grid container spacing={3}>
       {/* Chart */}
       <Grid item xs={12} md={8} lg={9}>

@@ -81,15 +81,11 @@ export default function SearchBy(props) {
         open={open}
         onClose={() => handleClose(props.searchby)}
       >
-        <MenuItem onClick={() => handleClose("Product Name")} disableRipple>
-          Product Name
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("Brand")} disableRipple>
-          Brand
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("Category")} disableRipple>
-          Category
-        </MenuItem>
+        {
+          props.searchList.map((item) => (
+            <MenuItem onClick={() => handleClose(item.label)}>{item.label}</MenuItem>
+          ))
+        }
       </StyledMenu>
     </div>
   );

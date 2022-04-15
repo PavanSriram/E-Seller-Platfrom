@@ -29,8 +29,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Link } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
-import SearchBy from "../searchBy";
+import SearchBy from "./searchBy";
+
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Search = createSvgIcon(
   <svg
@@ -73,7 +80,7 @@ const rows = [
   createData("Oreo", 437, 18.0, 63, 4.0),
 ];
 
-const MyProductToolbar = (props) => {
+const DiscountsToolbar = (props) => {
   return (
     <Toolbar
       sx={{
@@ -117,37 +124,27 @@ const MyProductToolbar = (props) => {
   );
 };
 
-export default function MyProduct() {
+export default function Discounts() {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Product Name");
+  const [searchBy, setSearchBy] = React.useState("Discount Id");
   const [headCells, setHeadCells] = React.useState([
     {
-      id: "productName",
-      label: "Product Name",
+      id: "discountId",
+      label: "Discount Id",
       order: "asc",
     },
     {
-      id: "brand",
-      label: "Brand",
+      id: "expiryDate",
+      label: "Expiry Date",
       order: "asc",
     },
     {
-      id: "category",
-      label: "Category",
-      order: "asc",
-    },
-    {
-      id: "price",
-      label: "Price",
-      order: "asc",
-    },
-    {
-      id: "count",
-      label: "Count",
+      id: "percent",
+      label: "Percent",
       order: "asc",
     },
   ]);
@@ -183,7 +180,7 @@ export default function MyProduct() {
 
   // add primary key of product to the path
   const handleEditButton = () => {
-    navigate("/seller/editproduct");
+    navigate("/seller/editdiscount");
   };
 
   // Delete dialog code
@@ -191,10 +188,22 @@ export default function MyProduct() {
 
   const handleDeleteClose = () => {
     setdeleteOpen(false);
+    setSnackOpen(true);
   };
 
   const handleDeleteButton = () => {
     setdeleteOpen(true);
+  };
+
+  // delete successfull snackbar at bottom
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
+  const handleDeleteSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -204,7 +213,7 @@ export default function MyProduct() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <MyProductToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
+        <DiscountsToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -217,9 +226,9 @@ export default function MyProduct() {
                 {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
-                      align={headCell.id === "productName" ? "left" : "right"}
+                      align={headCell.id === "discountId" ? "left" : "right"}
                       padding={
-                        headCell.id === "productName" ? "none" : "normal"
+                        headCell.id === "discountId" ? "none" : "normal"
                       }
                     >
                       <TableSortLabel
@@ -253,13 +262,13 @@ export default function MyProduct() {
                         scope="row"
                         padding="none"
                       >
-                        <Link href="/seller/product" underline="none">{row.name}</Link>
+                        {row.name}
                       </TableCell>
                       
                       <TableCell align="right">{row.calories}</TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      {/* <TableCell align="right">{row.carbs}</TableCell>
+                      <TableCell align="right">{row.protein}</TableCell> */}
                       <TableCell align="right">
                         <IconButton
                           edge="end"
@@ -313,10 +322,10 @@ export default function MyProduct() {
         color="primary"
         variant="extended"
         aria-label="add"
-        onClick={() => navigate("/seller/addproduct")}
+        onClick={() => navigate("/seller/adddiscount")}
       >
         <AddIcon sx={{ mr: 1 }} />
-        Add Product
+        Add new Discount
       </Fab>
 
       {/*Delete dialog box */}
@@ -328,12 +337,12 @@ export default function MyProduct() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Do you really want to delete the product?"}
+            {"Do you really want to delete the Discount?"}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description"></DialogContentText>
+            <DialogContentText id="alert-dialog-description">This will remove discounts for all associated products</DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions> 
             <Button onClick={handleDeleteClose}>NO</Button>
             <Button onClick={handleDeleteClose} autoFocus>
               YES
@@ -341,6 +350,12 @@ export default function MyProduct() {
           </DialogActions>
         </Dialog>
       </div>
+
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleDeleteSnackClose}>
+        <Alert onClose={handleDeleteSnackClose} severity="info" sx={{ width: '100%' }}>
+          Discount Removed...!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

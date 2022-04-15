@@ -13,9 +13,11 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
+import Chip from '@mui/material/Chip';
 import Switch from "@mui/material/Switch";
 import Fab from "@mui/material/Fab";
 import EditIcon from "@mui/icons-material/Edit";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
@@ -28,8 +30,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Link } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
-import SearchBy from "./MyProducts/searchBy";
+import SearchBy from "./searchBy";
+
+// const Alert = React.forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 const Search = createSvgIcon(
   <svg
@@ -57,19 +66,19 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
+  createData("Cupcake", 305, 3.7, "processing", 4.3),
+  createData("Donut", 452, 25.0, "in transit", 4.9),
+  createData("Eclair", 262, 16.0, "processing", 6.0),
+  createData("Frozen yoghurt", 159, 6.0, "shipped", 4.0),
+  createData("Gingerbread", 356, 16.0, "in transit", 3.9),
+  createData("Honeycomb", 408, 3.2, "delivered", 6.5),
+  createData("Ice cream sandwich", 237, 9.0, "processing", 4.3),
+  createData("Jelly Bean", 375, 0.0, "delivered", 0.0),
+  createData("KitKat", 518, 26.0, "in transit", 7.0),
+  createData("Lollipop", 392, 0.2, "shipped", 0.0),
+  createData("Marshmallow", 318, 0, "delivered", 2.0),
+  createData("Nougat", 360, 19.0, "shipped", 37.0),
+  createData("Oreo", 437, 18.0, "in transit", 4.0),
 ];
 
 const OrdersToolbar = (props) => {
@@ -105,6 +114,7 @@ const OrdersToolbar = (props) => {
             <SearchBy
               searchBy={props.searchBy}
               handleSearchBy={props.handleSearchBy}
+              searchList={props.searchList}
             />
           </Box>
         </Stack>
@@ -121,8 +131,13 @@ export default function Orders() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Product Name");
+  const [searchBy, setSearchBy] = React.useState("Order Id");
   const [headCells, setHeadCells] = React.useState([
+    {
+      label: "Order Id",
+      id: "orderId",
+      order: "asc",
+    },
     {
       id: "productName",
       label: "Product Name",
@@ -131,6 +146,26 @@ export default function Orders() {
     {
       id: "brand",
       label: "Brand",
+      order: "asc",
+    },
+    {
+      id: "quantity",
+      label: "Quantity",
+      order: "asc",
+    },
+    {
+      id: "orderStatus",
+      label: "Status",
+      order: "asc",
+    },
+    {
+      id: "paymentId",
+      label: "Payment Id",
+      order: "asc",
+    },
+    {
+      id: "deliveryDate",
+      label: "Delivery Date",
       order: "asc",
     },
   ]);
@@ -175,12 +210,23 @@ export default function Orders() {
 
   const handleDeleteClose = () => {
     setdeleteOpen(false);
+    setSnackOpen(true);
   };
 
   const handleDeleteButton = () => {
     setdeleteOpen(true);
   };
   
+  // delete successfull snackbar at bottom
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
+  const handleDeleteSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
 
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -190,7 +236,7 @@ export default function Orders() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <OrdersToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} />
+        <OrdersToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -203,15 +249,15 @@ export default function Orders() {
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
-                    align={headCell.id === "productName" ? "left" : "right"}
-                    padding={headCell.id === "productName" ? "none" : "normal"}
+                    align={headCell.id === "orderId" ? "left" : "right"}
+                    padding={headCell.id === "orderId" ? "none" : "normal"}
                   >
                     <TableSortLabel
                       direction={headCell.order}
                       active="true"
                       onClick={() => handleSortClick(headCell.id)}
                     >
-                      <Typography fontSize={"18px"} fontWeight="600">
+                      <Typography fontSize={"15px"} fontWeight="600">
                         {headCell.label}
                       </Typography>
                     </TableSortLabel>
@@ -237,11 +283,14 @@ export default function Orders() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        <Link href="/seller/order" underline="none">{row.name}</Link>
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
+                      <TableCell align="right"><Link href="/seller/product" underline="none">{row.calories}</Link></TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
+                      <TableCell align="right">{row.protein}</TableCell>
+                      {/*can seller change the status of a order*/}
+                      <TableCell align="right"><Chip variant="outlined" color="info" label={row.carbs} size="small" /></TableCell>
+                      <TableCell align="right">{row.protein}</TableCell>
                       <TableCell align="right">{row.protein}</TableCell>
                       <TableCell align="right">
                         <IconButton
@@ -283,16 +332,6 @@ export default function Orders() {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      <Fab
-        sx={{ position: "absolute", bottom: 50, right: 45 }}
-        color="primary"
-        variant="extended"
-        aria-label="add"
-        onClick={() => navigate("/seller/addproduct")}
-      >
-        <AddIcon sx={{ mr: 1 }} />
-        Add Product
-      </Fab>
 
       {/*Delete dialog box */}
       <div>
@@ -303,7 +342,7 @@ export default function Orders() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Do you really want to delete the product?"}
+            {"Do you really want to delete the Order?"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -318,6 +357,11 @@ export default function Orders() {
           </DialogActions>
         </Dialog>
       </div>
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleDeleteSnackClose}>
+        <Alert onClose={handleDeleteSnackClose} severity="info" sx={{ width: '100%' }}>
+          Order Removed...!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

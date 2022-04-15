@@ -22,7 +22,11 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
+import PersonIcon from '@mui/icons-material/Person';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import DiscountIcon from '@mui/icons-material/Discount';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -117,18 +121,42 @@ const DashboardContent = (props) => {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItemButton>
+
+      <ListItemButton onClick={() => navigate("/seller/myproducts")} >
+        <ListItemIcon>
+          <LocalMallIcon/>
+        </ListItemIcon>
+        <ListItemText primary="My Products" />
+      </ListItemButton>
+
       <ListItemButton onClick={() => navigate("/seller/orders")}>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
         <ListItemText primary="Orders"/>
       </ListItemButton>
-      <ListItemButton> 
+
+      <ListItemButton onClick={() => navigate("/seller/payments")}> 
         <ListItemIcon>
-          <PeopleIcon />
+          <PaymentsIcon/>
         </ListItemIcon>
-        <ListItemText primary="Customers" />
+        <ListItemText primary="Payments" />
       </ListItemButton>
+    
+      <ListItemButton onClick={() => navigate("/seller/discounts")}>
+        <ListItemIcon>
+          <DiscountIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Discounts" />
+      </ListItemButton>
+
+      <ListItemButton onClick={() => navigate("/seller/profile")}>
+        <ListItemIcon>
+          <PersonIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Profile" />
+      </ListItemButton>
+
       <ListItemButton>
         <ListItemIcon>
           <BarChartIcon />
@@ -143,24 +171,7 @@ const DashboardContent = (props) => {
       {/* <ListSubheader component="div" inset>
         Saved reports
       </ListSubheader> */}
-      <ListItemButton onClick={() => navigate("/seller/myproducts")} >
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="My Products" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Discounts" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Profile" />
-      </ListItemButton>
+      
     </React.Fragment>
   );
 
@@ -220,8 +231,8 @@ const DashboardContent = (props) => {
           <Divider />
           <List component="nav">
             {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {/* <Divider sx={{ my: 1 }} /> */}
+            {/* {secondaryListItems} */}
           </List>
         </Drawer>
         <Box

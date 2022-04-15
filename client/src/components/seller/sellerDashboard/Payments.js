@@ -28,9 +28,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Link } from "@mui/material";
+import { Link, Chip } from "@mui/material";
 
-import SearchBy from "../searchBy";
+import SearchBy from "./searchBy";
 
 const Search = createSvgIcon(
   <svg
@@ -73,7 +73,7 @@ const rows = [
   createData("Oreo", 437, 18.0, 63, 4.0),
 ];
 
-const MyProductToolbar = (props) => {
+const PaymentsToolbar = (props) => {
   return (
     <Toolbar
       sx={{
@@ -117,37 +117,37 @@ const MyProductToolbar = (props) => {
   );
 };
 
-export default function MyProduct() {
+export default function Payments() {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Product Name");
+  const [searchBy, setSearchBy] = React.useState("Payment Id");
   const [headCells, setHeadCells] = React.useState([
     {
-      id: "productName",
-      label: "Product Name",
+      id: "paymentId",
+      label: "Payment Id",
       order: "asc",
     },
     {
-      id: "brand",
-      label: "Brand",
+      id: "orderId",
+      label: "Order Id",
       order: "asc",
     },
     {
-      id: "category",
-      label: "Category",
+      id: "amount",
+      label: "Amount",
       order: "asc",
     },
     {
-      id: "price",
-      label: "Price",
+      id: "paymentMode",
+      label: "Payment Mode",
       order: "asc",
     },
     {
-      id: "count",
-      label: "Count",
+      id: "paymentStatus",
+      label: "Payment Status",
       order: "asc",
     },
   ]);
@@ -181,21 +181,6 @@ export default function MyProduct() {
     setDense(event.target.checked);
   };
 
-  // add primary key of product to the path
-  const handleEditButton = () => {
-    navigate("/seller/editproduct");
-  };
-
-  // Delete dialog code
-  const [deleteOpen, setdeleteOpen] = React.useState(false);
-
-  const handleDeleteClose = () => {
-    setdeleteOpen(false);
-  };
-
-  const handleDeleteButton = () => {
-    setdeleteOpen(true);
-  };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -204,7 +189,7 @@ export default function MyProduct() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <MyProductToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
+        <PaymentsToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -217,9 +202,9 @@ export default function MyProduct() {
                 {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
-                      align={headCell.id === "productName" ? "left" : "right"}
+                      align={headCell.id === "paymentId" ? "left" : "right"}
                       padding={
-                        headCell.id === "productName" ? "none" : "normal"
+                        headCell.id === "paymentId" ? "none" : "normal"
                       }
                     >
                       <TableSortLabel
@@ -233,7 +218,6 @@ export default function MyProduct() {
                       </TableSortLabel>
                     </TableCell>
                 ))}
-                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -253,31 +237,14 @@ export default function MyProduct() {
                         scope="row"
                         padding="none"
                       >
-                        <Link href="/seller/product" underline="none">{row.name}</Link>
+                        {row.name}
                       </TableCell>
                       
-                      <TableCell align="right">{row.calories}</TableCell>
+                      <TableCell align="right"><Link href="/seller/product" underline="none">{row.calories}</Link></TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
                       <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          size="small"
-                          onClick={handleEditButton}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          size="small"
-                          onClick={handleDeleteButton}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                      <TableCell align="right"><Chip variant="outlined" color="info" label={row.protein} size="small" /></TableCell>
+                      
                     </TableRow>
                   );
                 })}
@@ -308,39 +275,6 @@ export default function MyProduct() {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      <Fab
-        sx={{ position: "absolute", bottom: 50, right: 45 }}
-        color="primary"
-        variant="extended"
-        aria-label="add"
-        onClick={() => navigate("/seller/addproduct")}
-      >
-        <AddIcon sx={{ mr: 1 }} />
-        Add Product
-      </Fab>
-
-      {/*Delete dialog box */}
-      <div>
-        <Dialog
-          open={deleteOpen}
-          onClose={handleDeleteClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Do you really want to delete the product?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description"></DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDeleteClose}>NO</Button>
-            <Button onClick={handleDeleteClose} autoFocus>
-              YES
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
     </Box>
   );
 }

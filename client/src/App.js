@@ -6,8 +6,14 @@ import UserDashboard from "./components/user/userDashboard/Dashboard";
 import Home from "./components/user/Home.js";
 import Category from "./components/user/Category";
 import UserOrders from "./components/user/userDashboard/Orders"; 
-import UserSettings from "./components/user/Settings";
 import UserCart from "./components/user/Cart";
+import Checkout from "./components/user/checkout/Checkout";
+import UserProfile from "./components/user/UserProfile";
+import EditUserProfile from "./components/user/EditUserProfile";
+import Tracking from "./components/user/Tracking";
+import Fashion from "./components/user/categories/Fashion";
+import Electronics from "./components/user/categories/Electronics";
+import Sports from "./components/user/categories/Sports";
 
 import SellerDashboard from "./components/seller/sellerDashboard/Dashboard";
 import MyProduct from "./components/seller/sellerDashboard/MyProducts/MyProducts";
@@ -29,10 +35,16 @@ function App() {
     <Router>
       <Routes>
         <Route path='/user/dashboard' element={<UserDashboard child={<Home />}/>} />
-        <Route path='/user/category' element={<UserDashboard child={<Category />}/>} />
+        {/* <Route path='/user/category' element={<UserDashboard child={<Category />}/>} /> */}
         <Route path='/user/orders' element={<UserDashboard child={<UserOrders />}/>} />
-        <Route path='/user/settings' element={<UserDashboard child={<UserSettings />}/>} />
         <Route path='/user/cart' element={<UserDashboard child={<UserCart />}/>} />
+        <Route path='/user/checkout' element={<Checkout />} />
+        <Route path='/user/profile' element={<UserDashboard child={<UserProfile />}/>} />
+        <Route path='/user/edituserprofile' element={<UserDashboard child={<EditUserProfile />}/>} />
+        <Route path='/user/tracking' element={<UserDashboard child={<Tracking />}/>} />
+        <Route path='/sports' element={<UserDashboard child={<Sports />}/>} />
+        <Route path='/electronics' element={<UserDashboard child={<Electronics />}/>} />
+        <Route path='/fashion' element={<UserDashboard child={<Fashion />}/>} />
 
       <Route exact path='/seller/dashboard' element={<SellerDashboard child={<DashboardHome/>} />} />
       <Route exact path='/seller/myproducts' element={<SellerDashboard child={<MyProduct/>}/>} />

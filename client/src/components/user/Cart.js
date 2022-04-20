@@ -3,8 +3,11 @@ import { useState } from "react";
 import ItemCard from "./ItemCard";
 import { Paper, Grid, Container, Fab, Box } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
+import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router";
 
 const Cart = () => {
+  const  navigate = useNavigate();
   const [cartItems, setCartItems] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
   ]);

@@ -11,7 +11,7 @@ import UserCart from "./components/user/Cart";
 
 import SellerDashboard from "./components/seller/sellerDashboard/Dashboard";
 import MyProduct from "./components/seller/sellerDashboard/MyProducts/MyProducts";
-import DashboardHome from "./components/seller/sellerDashboard/Home";
+import DashboardHome from "./components/seller/sellerDashboard/Home.js";
 import AddProduct from "./components/seller/sellerDashboard/MyProducts/addProduct";
 import Orders from "./components/seller/sellerDashboard/Orders";
 import Product from "./components/seller/sellerDashboard/Product";

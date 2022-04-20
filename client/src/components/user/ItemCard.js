@@ -20,6 +20,7 @@ function ItemCard(props) {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
+          {props.child.productName}
           Product
         </Typography>
         <Typography variant="body2" color="text.secondary">

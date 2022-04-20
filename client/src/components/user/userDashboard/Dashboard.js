@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -16,13 +17,24 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./listItems";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import { MainListItems, SecondaryListItems } from "./listItems";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
 import SearchBar from "../SearchBar";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import LogoutIcon from "@mui/icons-material/ExitToApp";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PeopleIcon from "@mui/icons-material/People";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useNavigate } from 'react-router';
 
 
 function Copyright(props) {
@@ -96,6 +108,124 @@ function DashboardContent(props) {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  const navigate = useNavigate();
+
+  const [dropDown, setDropDown] = useState(false);
+
+  const handleCategoryClick = () => {
+    setDropDown(!dropDown);
+  };
+
+  const mainListItems = (
+    <React.Fragment>
+    <ListItemButton
+      onClick={() => {
+        navigate("/user/dashboard");
+      }}
+    >
+      <ListItemIcon>
+        <DashboardIcon />
+      </ListItemIcon>
+      <ListItemText primary="Dashboard" />
+    </ListItemButton>
+    <ListItemButton
+      onClick={() => {
+        navigate("/user/orders");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="My Orders" />
+    </ListItemButton>
+    
+    <ListItemButton
+      onClick={() => {
+        navigate("/user/cart");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Cart" />
+    </ListItemButton>
+    <ListItemButton onClick={handleCategoryClick}>
+      <ListItemIcon>
+        <BarChartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Categories" />
+      { dropDown===true ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> }
+    </ListItemButton>
+    <ListItemButton
+      sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/fashion");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Fashion" />
+    </ListItemButton>
+    <ListItemButton
+    sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/electronics");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Electronics" />
+    </ListItemButton>
+    <ListItemButton
+    sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/sports");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Sports" />
+    </ListItemButton>
+    <ListItemButton
+      onClick={() => {
+        navigate("/user/profile");
+      }}
+    >
+      <ListItemIcon>
+        <PeopleIcon />
+      </ListItemIcon>
+      <ListItemText primary="Profile" />
+    </ListItemButton>
+  </React.Fragment>
+  );
+
+const secondaryListItems = (
+  // return (
+  <React.Fragment>
+    <ListItemButton>
+      <ListItemIcon>
+        <LogoutIcon />
+      </ListItemIcon>
+      <ListItemText primary="Logout" />
+    </ListItemButton>
+    {/* <ListItemButton>
+      <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Last quarter" />
+    </ListItemButton>
+    <ListItemButton>
+      <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Year-end sale" />
+    </ListItemButton> */}
+  </React.Fragment>
+);
 
   return (
     <ThemeProvider theme={mdTheme}>

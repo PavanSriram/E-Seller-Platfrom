@@ -69,6 +69,8 @@ function Home() {
       </Container>
 
       <Category category="fashion" />
+      <Category category="electronics" />
+      <Category category="sports" />
       {/* <Category category="electronics"/>
       <Category category="sports"/> */}
 

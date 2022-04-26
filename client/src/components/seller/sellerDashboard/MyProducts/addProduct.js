@@ -58,52 +58,58 @@ export default function AddProduct(props) {
 
   // handle error for duplicate products
   const handleAdd = async () => {
-    values.sellerId = sellerId++;
-    values.numberOfOrders = 0;
-    await axios.post("http://localhost:3306/seller/addProduct", values).then((res) => {
-      if (res.data.status === "success") {
-        setAlertOpen(true);
-        setValues(defaultValues);
-      } else {
-        setAlertOpen(true);
-      }
-    });
+    let newErrors = {
+      productName: "",
+      brand: "",
+      title: "",
+      description: "",
+      price: "",
+      quantity: "",
+      // if discount Id is added check if it is present in discounts table, else print error
+      discountId: "",
+      dimensions: "",
+    };
 
-    // console.log(values);
-    // let newErrors = {
-    //   productName: "",
-    //   brand: "",
-    //   title: "",
-    //   description: "",
-    //   price: "",
-    //   quantity: "",
-    //   // if discount Id is added check if it is present in discounts table, else print error
-    //   discountId: "",
-    //   dimensions: "",
-    // };
+    let flag = true;
+    if (values.productName === "") {
+      newErrors["productName"] = "error";
+      flag = false;
+    }
 
-    // if (values.productName === "") {
-    //   newErrors["productName"] = "error";
-    // }
+    if (values.brand === "") {
+      newErrors["brand"] = "error";
+      flag = false;
+    }
 
-    // if (values.brand === "") {
-    //   newErrors["brand"] = "error";
-    // }
+    if (values.title === "") {
+      newErrors["title"] = "error";
+      flag = false;
+    }
 
-    // if (values.title === "") {
-    //   newErrors["title"] = "error";
-    // }
+    if (values.price === "" || values.price[0] === "-") {
+      newErrors["price"] = "error";
+      flag = false;
+    }
 
-    // if (values.price === "" || values.price[0] === "-") {
-    //   newErrors["price"] = "error";
-    // }
+    if (values.quantity === "" || !/^\d+$/.test(values.quantity)) {
+      newErrors["quantity"] = "error";
+      flag = false;
+    }
 
-    // if (values.quantity === "" || !/^\d+$/.test(values.quantity)) {
-    //   newErrors["quantity"] = "error";
-    // }
-
-    // setErrors(newErrors);
-    // setAlertOpen(true);
+    setErrors(newErrors);
+    if(flag === true){
+      values.sellerId = sellerId++;
+      values.numberOfOrders = 0;
+      await axios.post("http://localhost:3306/seller/addProduct", values).then((res) => {
+        if (res.data.status === "success") {
+          setAlertOpen(true);
+          setValues(defaultValues);
+        } else {
+          setAlertOpen(true);
+        }
+      });
+      setAlertOpen(true);
+    }
   };
 
   return (

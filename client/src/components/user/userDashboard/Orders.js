@@ -7,12 +7,12 @@ import axios from "axios";
 import { useEffect } from "react";
 
 function Orders(props) {
-  const [products, setProducts] = useState([{}]);
+  const [myOrders, setMyOrders] = useState([{}]);
 
   useEffect(() => {
     async function fetchData() {
       await axios.get(`http://localhost:3306/user/orders`).then((res) => {
-        setProducts(res.data);
+        setMyOrders(res.data);
         console.log(res.data);
       });
     }
@@ -22,8 +22,8 @@ function Orders(props) {
   return (
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
       
-      <Grid container spacing={3}>
-        {products.map((item) => (
+      <Grid container spacing ={3}>
+        {myOrders.map((item) => (
           <ItemCard child={item} />
         ))}
       </Grid>

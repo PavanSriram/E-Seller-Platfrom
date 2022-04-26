@@ -14,10 +14,13 @@ import { Button } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
 
 export default function AddProduct(props) {
+  let sellerId = 2;
   const [alertOpen, setAlertOpen] = React.useState(false);
   let defaultValues = {
+    sellerId: 0,
     productName: "",
     brand: "",
     title: "",
@@ -28,6 +31,7 @@ export default function AddProduct(props) {
     quantity: "",
     discountId: "",
     dimensions: "",
+    numberOfOrders: 0,
   };
 
   if (!props) {
@@ -53,42 +57,53 @@ export default function AddProduct(props) {
   };
 
   // handle error for duplicate products
-  const handleAdd = () => {
+  const handleAdd = async () => {
+    values.sellerId = sellerId++;
+    values.numberOfOrders = 0;
+    await axios.post("http://localhost:3306/seller/addProduct", values).then((res) => {
+      if (res.data.status === "success") {
+        setAlertOpen(true);
+        setValues(defaultValues);
+      } else {
+        setAlertOpen(true);
+      }
+    });
+
     // console.log(values);
-    let newErrors = {
-      productName: "",
-      brand: "",
-      title: "",
-      description: "",
-      price: "",
-      quantity: "",
-      // if discount Id is added check if it is present in discounts table, else print error
-      discountId: "",
-      dimensions: "",
-    };
+    // let newErrors = {
+    //   productName: "",
+    //   brand: "",
+    //   title: "",
+    //   description: "",
+    //   price: "",
+    //   quantity: "",
+    //   // if discount Id is added check if it is present in discounts table, else print error
+    //   discountId: "",
+    //   dimensions: "",
+    // };
 
-    if (values.productName === "") {
-      newErrors["productName"] = "error";
-    }
+    // if (values.productName === "") {
+    //   newErrors["productName"] = "error";
+    // }
 
-    if (values.brand === "") {
-      newErrors["brand"] = "error";
-    }
+    // if (values.brand === "") {
+    //   newErrors["brand"] = "error";
+    // }
 
-    if (values.title === "") {
-      newErrors["title"] = "error";
-    }
+    // if (values.title === "") {
+    //   newErrors["title"] = "error";
+    // }
 
-    if (values.price === "" || values.price[0] === "-") {
-      newErrors["price"] = "error";
-    }
+    // if (values.price === "" || values.price[0] === "-") {
+    //   newErrors["price"] = "error";
+    // }
 
-    if (values.quantity === "" || !/^\d+$/.test(values.quantity)) {
-      newErrors["quantity"] = "error";
-    }
+    // if (values.quantity === "" || !/^\d+$/.test(values.quantity)) {
+    //   newErrors["quantity"] = "error";
+    // }
 
-    setErrors(newErrors);
-    setAlertOpen(true);
+    // setErrors(newErrors);
+    // setAlertOpen(true);
   };
 
   return (

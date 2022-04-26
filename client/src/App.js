@@ -34,8 +34,8 @@ import SignIn from "./components/seller/sellerDashboard/SignIn";
 
 function App() {
 
-  const [user, setUser] = React.useState(null);
-  const [seller, setSeller] = React.useState(null);
+  const [user, setUser] = React.useState();
+  const [seller, setSeller] = React.useState();
 
   return (
     <Router>

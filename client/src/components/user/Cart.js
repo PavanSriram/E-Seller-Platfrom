@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import ItemCard from "./ItemCard";
 import { Paper, Grid, Container, Fab, Box } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Cart = () => {
+
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+
   const  navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+
+  // useEffect(() => {
+  //   let request = {userId};
+  //   async function fetchData() {
+  //     await axios.post(`http://localhost:3306/user/cart`, request)
+  //     .then((res) => {
+  //       setCartItems(res.data);
+  //       console.log(res.data);
+  //     });
+  //   }
+  //   fetchData();
+  // }, [userId]);
   
   return (
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2, "& > :not(style)": { m: 1 } }}>

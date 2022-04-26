@@ -85,7 +85,7 @@ app.get("/cart", (req, res) => {
 });
 
 app.get("/user/profile", (req, res) => {
-  const sql = `SELECT * FROM Orders WHERE userId = ${req.body.userId}`;
+  const sql = `SELECT * FROM users WHERE userId = ${req.body.user}`;
   
     connection.query(sql, (err, result) => {
       if (err) {
@@ -96,6 +96,43 @@ app.get("/user/profile", (req, res) => {
     });
 
 });
+
+app.post("/user/register", (req, res) => {
+  const sql = `INSERT INTO users (firstName, lastName, email, password, address, phoneNumber) VALUES ("${req.body.firstName}", "${req.body.lastName}", "${req.body.email}", "${req.body.password}", "${req.body.address}", "${req.body.phoneNumber}")`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+          console.log(err);
+      }
+      console.log(result);
+      res.send(result);
+    });
+  });
+
+  app.post("/user/signin", (req, res) => {
+    const sql = `SELECT * FROM users WHERE email = "${req.body.email}" AND password = "${req.body.password}"`;
+  
+      connection.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log(result);
+        res.send(result);
+        // console.log("Hellwo");
+      });
+    });
+
+  app.post("/seller/register", (req, res) => {
+    const sql = `INSERT INTO users (firstName, lastName, email, password, address, phoneNumber, companyName) VALUES ("${req.body.firstName}", "${req.body.lastName}", "${req.body.email}", "${req.body.password}", "${req.body.address}", "${req.body.phoneNumber}", "${req.body.companyName}")`;
+  
+      connection.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log(result);
+        res.send(result);
+      });
+    });
 
 app.post("/seller/addproduct", (req, res) => {
   const sql = `INSERT INTO Products (sellerId, productName, brand, title, description, price, quantity, discountId, dimensions, category, subCategory, numberOfOrders) VALUES ("${req.body.sellerId}", "${req.body.productName}", "${req.body.brand}", "${req.body.title}", "${req.body.description}", "${req.body.price}", "${req.body.quantity}", "${req.body.discountId}", "${req.body.dimensions}", "${req.body.category}", "${req.body.subCategory}", "${req.body.numberOfOrders}")`;
@@ -121,4 +158,4 @@ app.get("/seller/orders", (req, res) => {
   });
 })
 
-app.listen("3307", () => console.log("Server started at port 3307"));
+app.listen("3306", () => console.log("Server started at port 3306"));

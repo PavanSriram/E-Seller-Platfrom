@@ -13,7 +13,7 @@ import axios from "axios";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
 
-function Home() {
+function Home(props) {
   // const [data, setData] = useState([{}]);
 
   // const fetchData =
@@ -46,20 +46,14 @@ function Home() {
         sx={{
           display: "flex",
           mb: 2,
-          // marginLeft: "10vw",
-          // alignItems: "center",
-          // backgroundColor: "red",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            // marginTop: "10px",
-            // marginLeft: "7.5vw",
             margin: "0 auto",
             justifyItems: "center",
             alignItems: "center",
-            // backgroundColor: "blue",
           }}
         >
           <CategoryDropdown />

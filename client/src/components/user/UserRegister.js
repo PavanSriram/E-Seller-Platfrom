@@ -14,38 +14,36 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const theme = createTheme();
 
-export default function Register(props) {
-    // sign in successfull snackbar at bottom
-    const [snackOpen, setSnackOpen] = React.useState(false);
+export default function UserRegister(props) {
+  // sign in successfull snackbar at bottom
+  const navigate = useNavigate();
 
-    const [alertOpen, setAlertOpen] = React.useState(false);
+  const [snackOpen, setSnackOpen] = React.useState(false);
 
-    const handleSnackClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-  
-      setSnackOpen(false);
-    };
-  
+  const [alertOpen, setAlertOpen] = React.useState(false);
+
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
   let defaultValues = {
     firstName: "",
     lastName: "",
     email: "",
     address: "",
     phoneNumber: "",
-    companyName: "",
     password: "",
   };
-
-  // if (!props) {
-  //   defaultValues = [...props];
-  // }
 
   const [values, setValues] = React.useState(defaultValues);
   const [errors, setErrors] = React.useState({
@@ -53,9 +51,7 @@ export default function Register(props) {
     lastName: "",
     email: "",
     address: "",
-    // sellerId: "",
     phoneNumber: "",
-    companyName: "",
     password: "",
   });
 
@@ -63,17 +59,19 @@ export default function Register(props) {
     setValues({ ...values, [event.target.id]: event.target.value });
   };
 
+  const gotoSignIn = () => {
+    navigate("/user/signin");
+    };
+
   // generate unique seller id
-  const handleAdd = async () => {
+  const handleRegister = async () => {
     console.log(values);
     let newErrors = {
       firstName: "",
       lastName: "",
       email: "",
       address: "",
-      // sellerId: "",
       phoneNumber: "",
-      companyName: "",
       password: "",
     };
 
@@ -104,28 +102,28 @@ export default function Register(props) {
       flag = false;
     }
 
-    if (values.companyName === "") {
-      newErrors["companyName"] = "error";
-      flag = false;
-    }
-
     if (values.password.length < 7) {
       newErrors["password"] = "error";
       flag = false;
     }
 
     setErrors(newErrors);
-    if(flag === true){
-      await axios.post("http://localhost:3306/seller/register", values).then((res) => {
-        if (res.data.status === "success") {
-          setAlertOpen(true);
-          setValues(defaultValues);
-        } else {
-          setAlertOpen(true);
-        }
-      });
+    if (flag === true) {
+      await axios
+        .post("http://localhost:3306/user/register", values)
+        .then((res) => {
+            console.log(res);
+          if (res.data !== '') {
+            setAlertOpen(true);
+            setValues(defaultValues);
+            gotoSignIn();
+          } else {
+            setAlertOpen(true);
+          }
+        });
       setAlertOpen(true);
     }
+
   };
 
   return (
@@ -140,16 +138,13 @@ export default function Register(props) {
             alignItems: "center",
           }}
         >
-          
           <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box
-            sx={{ mt: 3 }}
-          >
+          <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -197,19 +192,7 @@ export default function Register(props) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  required
-                  id="companyName"
-                  label="Company Name"
-                  error={errors.companyName}
-                  value={values.companyName}
-                  onChange={handleChange}
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   required
@@ -240,7 +223,7 @@ export default function Register(props) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleAdd}
+              onClick={handleRegister}
             >
               Register
             </Button>
@@ -253,18 +236,18 @@ export default function Register(props) {
               </Grid>
             </Grid>
             <Snackbar
-            open={snackOpen}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-          >
-            <Alert
+              open={snackOpen}
+              autoHideDuration={6000}
               onClose={handleSnackClose}
-              severity="info"
-              sx={{ width: "100%" }}
             >
-              You are registered successfully...!
-            </Alert>
-          </Snackbar>
+              <Alert
+                onClose={handleSnackClose}
+                severity="info"
+                sx={{ width: "100%" }}
+              >
+                You are registered successfully...!
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
       </Container>

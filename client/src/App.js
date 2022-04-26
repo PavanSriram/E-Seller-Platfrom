@@ -14,6 +14,8 @@ import Tracking from "./components/user/Tracking";
 import Fashion from "./components/user/categories/Fashion";
 import Electronics from "./components/user/categories/Electronics";
 import Sports from "./components/user/categories/Sports";
+import UserSignIn from "./components/user/UserSignIn";
+import UserRegister from "./components/user/UserRegister";
 
 import SellerDashboard from "./components/seller/sellerDashboard/Dashboard";
 import MyProduct from "./components/seller/sellerDashboard/MyProducts/MyProducts";
@@ -31,20 +33,26 @@ import EditSellerProfile from "./components/seller/sellerDashboard/EditSellerPro
 import SignIn from "./components/seller/sellerDashboard/SignIn";
 
 function App() {
+
+  const [user, setUser] = React.useState(null);
+  const [seller, setSeller] = React.useState(null);
+
   return (
     <Router>
       <Routes>
-        <Route path='/user/dashboard' element={<UserDashboard child={<Home />}/>} />
+        <Route path='/user/dashboard' element={<UserDashboard child={<Home user={user} />}/>} />
         {/* <Route path='/user/category' element={<UserDashboard child={<Category />}/>} /> */}
-        <Route path='/user/orders' element={<UserDashboard child={<UserOrders />}/>} />
-        <Route path='/user/cart' element={<UserDashboard child={<UserCart />}/>} />
-        <Route path='/user/checkout' element={<Checkout />} />
-        <Route path='/user/profile' element={<UserDashboard child={<UserProfile />}/>} />
-        <Route path='/user/edituserprofile' element={<UserDashboard child={<EditUserProfile />}/>} />
-        <Route path='/user/tracking' element={<UserDashboard child={<Tracking />}/>} />
+        <Route path='/user/orders' element={<UserDashboard child={<UserOrders user={user}/>}/>} />
+        <Route path='/user/cart' element={<UserDashboard child={<UserCart user={user}/>}/>} />
+        <Route path='/user/checkout' element={<Checkout user={user}/>} />
+        <Route path='/user/profile' element={<UserDashboard child={<UserProfile user={user}/>}/>} />
+        <Route path='/user/edituserprofile' element={<UserDashboard child={<EditUserProfile user={user}/>}/>} />
+        <Route path='/user/tracking' element={<UserDashboard child={<Tracking user={user}/>}/>} />
         <Route path='/sports' element={<UserDashboard child={<Sports />}/>} />
-        <Route path='/electronics' element={<UserDashboard child={<Electronics />}/>} />
+        <Route path='/electronics' element={<UserDashboard child={<Electronics />}/>}/>
         <Route path='/fashion' element={<UserDashboard child={<Fashion />}/>} />
+        <Route path='/user/signin' element={<UserSignIn setUser={setUser} />} />
+        <Route path='/user/register' element={<UserRegister />} />
 
       <Route exact path='/seller/dashboard' element={<SellerDashboard header="Dashboard" child={<DashboardHome/>}/>} />
       <Route exact path='/seller/myproducts' element={<SellerDashboard header="My Products" child={<MyProduct/>}/>} />
@@ -58,7 +66,7 @@ function App() {
       <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
       <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
       <Route exact path='/seller/register' element={<Register/>} />
-      <Route exact path='/seller/signin' element={<SignIn/>} />
+      <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller} />} />
       <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile/>}/>} />
       <Route exact path='/seller/editsellerprofile' element={<SellerDashboard header="Profile" child={<EditSellerProfile/>} />}/>
     </Routes>

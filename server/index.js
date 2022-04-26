@@ -58,7 +58,7 @@ app.get("/sports", (req, res) => {
 });
 
 app.get("/user/orders", (req, res) => {
-  const sql = `SELECT * FROM Orders WHERE userId = ${req.body.userId}`;
+  const sql = `SELECT * FROM Orders WHERE userId = 1`;
   
     connection.query(sql, (err, result) => {
       if (err) {
@@ -70,19 +70,7 @@ app.get("/user/orders", (req, res) => {
 
 });
 
-app.get("/seller/orders", (req, res) => {
-  const sql = `SELECT * FROM Orders WHERE sellerId = ${req.body.sellerId}`;
-  
-    connection.query(sql, (err, result) => {
-      if (err) {
-          console.log(err);
-      }
-      console.log(result);
-      res.send(result);
-    });
-
-});
-
+//check this once
 app.get("/cart", (req, res) => {
   const sql = `SELECT * FROM Orders WHERE userID = ${req.body.userId}`;
   
@@ -109,5 +97,28 @@ app.get("/user/profile", (req, res) => {
 
 });
 
+app.post("/seller/addproduct", (req, res) => {
+  const sql = `INSERT INTO Products (sellerId, productName, brand, title, description, price, quantity, discountId, dimensions, category, subCategory, numberOfOrders) VALUES ("${req.body.sellerId}", "${req.body.productName}", "${req.body.brand}", "${req.body.title}", "${req.body.description}", "${req.body.price}", "${req.body.quantity}", "${req.body.discountId}", "${req.body.dimensions}", "${req.body.category}", "${req.body.subCategory}", "${req.body.numberOfOrders}")`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+          console.log(err);
+      }
+      console.log(result);
+      res.send(result);
+    });
+})
+
+app.get("/seller/orders", (req, res) => {
+  const sql = `SELECT * FROM Orders WHERE sellerId = ${req.body.sellerId}`;
+
+  connection.query(sql, (err, result) => {
+    if (err) {
+        console.log(err);
+    }
+    console.log(result);
+    res.send(result);
+  });
+})
 
 app.listen("3307", () => console.log("Server started at port 3307"));

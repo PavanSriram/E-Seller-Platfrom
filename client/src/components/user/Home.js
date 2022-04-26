@@ -68,9 +68,12 @@ function Home() {
         </Box>
       </Container>
 
+      <Container>
       <Category category="fashion" />
-      <Category category="electronics" />
-      <Category category="sports" />
+        <Category category="electronics" />
+        {/* <Category category="sports" /> */}
+      </Container>
+        
       {/* <Category category="electronics"/>
       <Category category="sports"/> */}
 

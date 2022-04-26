@@ -59,11 +59,11 @@ function createData(name, calories, fat, carbs, protein) {
 
 const rows = [
   createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
+  createData("Pen Drive", "SanDisk", "Electronics", "599", "29"),
+  createData("School Bag", "Lunar", "Fashion", "9000", "400"),
+  createData("Harry Porter Box Set", "Bloom's Surry", "Hobbies", "50007", "15"),
+  createData("boAt Airdopes", "BOAT", "Electronics", "6000", "50"),
+  createData("Mi Power Bank", "Mi", "Electronics", "2000", "15"),
   createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
 ];
 

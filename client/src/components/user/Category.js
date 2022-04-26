@@ -8,7 +8,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 function Category(props) {
-  const [products, setProducts] = useState([{}]);
+  const [products, setProducts] = useState([1, 2, 3, 4]);
 
   useEffect(() => {
     async function fetchData() {

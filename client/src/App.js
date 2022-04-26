@@ -46,21 +46,21 @@ function App() {
         <Route path='/electronics' element={<UserDashboard child={<Electronics />}/>} />
         <Route path='/fashion' element={<UserDashboard child={<Fashion />}/>} />
 
-      <Route exact path='/seller/dashboard' element={<SellerDashboard child={<DashboardHome/>} />} />
-      <Route exact path='/seller/myproducts' element={<SellerDashboard child={<MyProduct/>}/>} />
-      <Route exact path='/seller/addproduct' element={<SellerDashboard child={<AddProduct/>}/>} />
-      <Route exact path='/seller/editproduct' element={<SellerDashboard child={<AddProduct/>}/>} />
-      <Route exact path='/seller/orders' element={<SellerDashboard child={<Orders/>}/>} />
-      <Route exact path='/seller/product' element={<SellerDashboard child={<Product/>}/>} />
-      <Route exact path='/seller/order' element={<SellerDashboard child={<Order/>}/>} />
-      <Route exact path='/seller/payments' element={<SellerDashboard child={<Payments/>}/>} />
-      <Route exact path='/seller/discounts' element={<SellerDashboard child={<Discounts/>}/>} />
-      <Route exact path='/seller/adddiscount' element={<SellerDashboard child={<AddDiscount/>}/>} />
-      <Route exact path='/seller/editdiscount' element={<SellerDashboard child={<AddDiscount/>}/>} />
+      <Route exact path='/seller/dashboard' element={<SellerDashboard header="Dashboard" child={<DashboardHome/>}/>} />
+      <Route exact path='/seller/myproducts' element={<SellerDashboard header="My Products" child={<MyProduct/>}/>} />
+      <Route exact path='/seller/addproduct' element={<SellerDashboard header="My Products" child={<AddProduct/>}/>} />
+      <Route exact path='/seller/editproduct' element={<SellerDashboard header="MY Products" child={<AddProduct/>}/>} />
+      <Route exact path='/seller/orders' element={<SellerDashboard header="Orders" child={<Orders/>}/>} />
+      <Route exact path='/seller/product' element={<SellerDashboard header="My Products" child={<Product/>}/>} />
+      <Route exact path='/seller/order' element={<SellerDashboard header="Orders" child={<Order/>}/>} />
+      <Route exact path='/seller/payments' element={<SellerDashboard header="Payments" child={<Payments/>}/>} />
+      <Route exact path='/seller/discounts' element={<SellerDashboard header="Discounts" child={<Discounts/>}/>} />
+      <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
+      <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
       <Route exact path='/seller/register' element={<Register/>} />
       <Route exact path='/seller/signin' element={<SignIn/>} />
-      <Route exact path='/seller/profile' element={<SellerDashboard child={<SellerProfile/>}/>} />
-      <Route exact path='/seller/editsellerprofile' element={<SellerDashboard child={<EditSellerProfile/>} />}/>
+      <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile/>}/>} />
+      <Route exact path='/seller/editsellerprofile' element={<SellerDashboard header="Profile" child={<EditSellerProfile/>} />}/>
     </Routes>
   </Router>
   );

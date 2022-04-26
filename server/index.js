@@ -110,4 +110,4 @@ app.get("/user/profile", (req, res) => {
 });
 
 
-app.listen("3306", () => console.log("Server started at port 3306"));
+app.listen("3307", () => console.log("Server started at port 3307"));

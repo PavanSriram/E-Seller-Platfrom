@@ -55,23 +55,25 @@ const Search = createSvgIcon(
   "Search"
 );
 
-function createData(name, calories, fat, carbs, protein) {
+function createData(name, calories, fat, quantity, carbs, paymentId, protein) {
   return {
     name,
     calories,
     fat,
+    quantity,
     carbs,
+    paymentId,
     protein,
   };
 }
 
 const rows = [
-  createData("01", "OPPO A15", "OPPO", "processing", 1),
-  createData("02", "Acer Swift", "ACER", "in transit", 2),
-  createData("03", "Lenevo Ideopad", "LENEVO", "processing", 4),
-  createData("04", "HP Laptop", "HP", "shipped", 4.0),
-  createData("05", "DELL Laptop", "DELL", "in transit", 1),
-  createData("06", "U.S.POLO Men's Regular", "U.S.POLO", "delivered", 5),
+  createData("01", "OPPO A15", "OPPO", 12, "processing", "001", "12-11-2021"),
+  createData("02", "Acer Swift", "ACER", 2, "in transit", "012", "02-10-2021"),
+  createData("03", "Lenevo Ideopad", "LENEVO", 1, "processing", "013", "11-01-2021"),
+  createData("04", "HP Laptop", "HP", 3, "shipped", "017", "19-09-2021"),
+  createData("05", "DELL Laptop", "DELL", 5, "in transit", "215", "26-02-2021"),
+  createData("06", "U.S.POLO Men's Regular", "U.S.POLO", 6, "delivered", "212", "15-01-2021"),
   createData("07", 237, 9.0, "processing", 4.3),
   createData("08", 375, 0.0, "delivered", 0.0),
   createData("09", 518, 26.0, "in transit", 7.0),
@@ -287,10 +289,10 @@ export default function Orders() {
                       </TableCell>
                       <TableCell align="right"><Link href="/seller/product" underline="none">{row.calories}</Link></TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">{row.quantity}</TableCell>
                       {/*can seller change the status of a order*/}
                       <TableCell align="right"><Chip variant="outlined" color="info" label={row.carbs} size="small" /></TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">{row.paymentId}</TableCell>
                       <TableCell align="right">{row.protein}</TableCell>
                       <TableCell align="right">
                         <IconButton

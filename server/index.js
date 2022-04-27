@@ -7,6 +7,20 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const mongoose = require('mongoose');
+const connection1 = 'mongodb+srv://e-seller-platform:seller-e-platform@cluster0.78fzo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+
+mongoose
+  .connect(connection1, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('mongoDB Database connected successfully'))
+  .catch((error) => console.log(error));
+
+
+  const Cart = mongoose.model('Cart',require('./schemas/cart.js'), 'cart');
+
 // db.connect(err => {
 //   if(err) {
 //     throw err;
@@ -70,19 +84,12 @@ app.get("/user/orders", (req, res) => {
 
 });
 
-//check this once
-app.get("/cart", (req, res) => {
-  const sql = `SELECT * FROM Orders WHERE userID = ${req.body.userId}`;
-  
-    connection.query(sql, (err, result) => {
-      if (err) {
-          console.log(err);
-      }
-      console.log(result);
-      res.send(result);
-    });
+// //check this once
+// app.get("/cart", (req, res) => {
 
-});
+
+
+// });
 
 app.get("/user/profile", (req, res) => {
   const sql = `SELECT * FROM users WHERE userId = ${req.body.user}`;
@@ -158,4 +165,15 @@ app.get("/seller/orders", (req, res) => {
   });
 })
 
-app.listen("3306", () => console.log("Server started at port 3306"));
+const cartRouter = require('./routes/cart.js');
+app.use('/usercart', cartRouter); 
+
+app.get("/user/cart", (req, res) => {
+  Cart.findById(req.body.userId, (error, cart) =>{
+    console.log(cart);
+    res.json(cart);
+  })
+})
+ 
+app.listen("3307", () => console.log("Server started at port 3307"));
+   

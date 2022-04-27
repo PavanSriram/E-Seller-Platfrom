@@ -12,7 +12,7 @@ function Category(props) {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3306/${props.category}`).then((res) => {
+      await axios.get(`http://localhost:3308/${props.category}`).then((res) => {
         setProducts(res.data);
         console.log(res.data);
       });

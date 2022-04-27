@@ -11,7 +11,7 @@ const Fashion = () => {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3306/fashion`).then((res) => {
+      await axios.get(`http://localhost:3308/fashion`).then((res) => {
         setFashionProducts(res.data);
         console.log(res.data);
       });

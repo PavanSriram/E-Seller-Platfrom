@@ -79,7 +79,7 @@ export default function EditSellerProfile(props) {
     if (flag) {
       // console.log(values);
       await axios
-        .post("http://localhost:3306/user/update", values)
+        .post("http://localhost:3308/user/update", values)
         .then((res) => {
           if (res.data !== "") {
             setAlertOpen(true);

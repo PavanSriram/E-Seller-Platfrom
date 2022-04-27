@@ -20,17 +20,17 @@ function Home(props) {
 
   // useEffect(() => {
   //   async function fetchDataFashion() {
-  //     await axios.get("http://localhost:3306/fashion").then((res) => {
+  //     await axios.get("http://localhost:3308/fashion").then((res) => {
   //       setData((data) => [...data, res.data]);
   //     });
   //   }
   //   async function fetchDataElectronics() {
-  //     await axios.get("http://localhost:3306/electronics").then((res) => {
+  //     await axios.get("http://localhost:3308/electronics").then((res) => {
   //       setData((data) => [...data, res.data]);
   //     });
   //   }
   //   async function fetchDataSports() {
-  //     await axios.get("http://localhost:3306/sports").then((res) => {
+  //     await axios.get("http://localhost:3308/sports").then((res) => {
   //       setData((data) => [...data, res.data]);
   //     });
   //   }

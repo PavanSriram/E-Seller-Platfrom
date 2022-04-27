@@ -10,16 +10,6 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const mongoose = require('mongoose');
-const connection1 = 'mongodb+srv://e-seller-platform:seller-e-platform@cluster0.78fzo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-
-mongoose
-  .connect(connection1, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('mongoDB Database connected successfully'))
-  .catch((error) => console.log(error));
-
-
-  const Cart = mongoose.model('Cart',require('./schemas/cart.js'), 'cart');
 
 // db.connect(err => {
 //   if(err) {
@@ -132,7 +122,7 @@ app.post("/user/register", (req, res) => {
 
   app.post("/user/signin", (req, res) => {
     const sql = `SELECT * FROM users WHERE email = "${req.body.email}" AND password = "${req.body.password}"`;
-  
+    console.log(req);
       connection.query(sql, (err, result) => {
         if (err) {
             console.log(err);
@@ -179,15 +169,79 @@ app.get("/seller/orders", (req, res) => {
   });
 })
 
-const cartRouter = require('./routes/cart.js');
-app.use('/usercart', cartRouter); 
+// const cartRouter = require('./routes/cart.js');
+// app.use('/usercart', cartRouter); 
 
-app.get("/user/cart", (req, res) => {
-  Cart.findById(req.body.userId, (error, cart) =>{
-    console.log(cart);
-    res.json(cart);
-  })
-})
+// async function findCart(client, id){
+//   const result = await client.db("user").collections("cart").findOne({_id: id});
+//   if(result) {
+//     console.log(`Found cart item '${id}'`);
+//     console.log(result);
+//   }
+//   else {
+//     console.log("No item found");
+//   }
+//   return result;
+// }
+
+const { MongoClient } = require('mongodb');
+let client;
+async function main() {
+  const uri = "mongodb+srv://e-seller-platform:seller-e-platform@cluster0.78fzo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  try {
+    await client.connect((err) => {
+      var db = client.db("user");
+      
+      console.log("database connected")
+      app.get("/usercart/:id", (req, res) => {
+        const cart = db.collection("cart").findOne({_id : req.params.id})
+        .then( function(cart) {
+          console.log(cart); 
+          res.json(cart);
+        });
+        
+      });
+
+      app.post("/addusercart/:id", (req,res) => {
+          const result = db.collection("cart").insertOne({
+            _id: req.params.id,
+            cart: []
+          })
+          .then( function(result) {
+            res.json(result);8
+            console.log('inserted Id', result.insertedId);
+          });
+      });
+
+      app.put("/updateusercart/:id", (req,res) => {
+          const result = db.collection("cart").updateOne({
+            _id: req.params.id
+          },{$set: {cart : [1, 3, 5, 2]}})
+          .then( function(result) {
+            res.json(result);
+            console.log('inserted Id', result.insertedId);
+          });
+      });
+
+      
+
+    });
+  } catch (e) {
+    console.error(e);
+  } 
  
-app.listen("3307", () => console.log("Server started at port 3307"));
+}
+
+main().catch(console.error);
+
+// app.get("/user/cart", (req, res) => {
+//   res.json(findCart(client, 1));
+// })
+  
+app.listen("3308", () => console.log("Server started at port 3308"));
    

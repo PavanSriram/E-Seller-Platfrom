@@ -24,7 +24,7 @@ function UserProfile(props) {
     let request = {userId: userId};
     console.log(request);
     async function fetchData() {
-      await axios.post(`http://localhost:3306/user/profile`, request).then((res) => {
+      await axios.post(`http://localhost:3308/user/profile`, request).then((res) => {
         setUserDetails(res.data[0]);
         console.log(res.data[0]);
       });

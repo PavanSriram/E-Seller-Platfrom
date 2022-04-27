@@ -116,7 +116,7 @@ export default function Register(props) {
 
     setErrors(newErrors);
     if(flag === true){
-      await axios.post("http://localhost:3306/seller/register", values).then((res) => {
+      await axios.post("http://localhost:3308/seller/register", values).then((res) => {
         if (res.data.status === "success") {
           setAlertOpen(true);
           setValues(defaultValues);

@@ -11,7 +11,7 @@ const Electronics = () => {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3306/electronics`).then((res) => {
+      await axios.get(`http://localhost:3308/electronics`).then((res) => {
         setElectronicProducts(res.data);
         console.log(res.data);
       });

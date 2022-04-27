@@ -11,7 +11,7 @@ function Orders(props) {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3306/user/orders`).then((res) => {
+      await axios.get(`http://localhost:3308/user/orders`).then((res) => {
         setMyOrders(res.data);
         console.log(res.data);
       });

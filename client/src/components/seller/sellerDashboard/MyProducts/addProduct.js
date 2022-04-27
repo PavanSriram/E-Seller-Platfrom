@@ -100,7 +100,7 @@ export default function AddProduct(props) {
     if(flag === true){
       values.sellerId = sellerId++;
       values.numberOfOrders = 0;
-      await axios.post("http://localhost:3306/seller/addProduct", values).then((res) => {
+      await axios.post("http://localhost:3308/seller/addProduct", values).then((res) => {
         if (res.data.status === "success") {
           setAlertOpen(true);
           setValues(defaultValues);

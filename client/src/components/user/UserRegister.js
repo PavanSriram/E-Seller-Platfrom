@@ -110,7 +110,7 @@ export default function UserRegister(props) {
     setErrors(newErrors);
     if (flag === true) {
       await axios
-        .post("http://localhost:3306/user/register", values)
+        .post("http://localhost:3308/user/register", values)
         .then((res) => {
             console.log(res);
           if (res.data !== '') {

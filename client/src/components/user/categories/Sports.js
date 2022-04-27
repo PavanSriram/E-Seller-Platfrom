@@ -11,7 +11,7 @@ const Sports = () => {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3306/sports`).then((res) => {
+      await axios.get(`http://localhost:3308/sports`).then((res) => {
         setSportsProducts(res.data);
         console.log(res.data);
       });

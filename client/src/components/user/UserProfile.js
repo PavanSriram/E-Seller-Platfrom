@@ -9,13 +9,24 @@ import axios from "axios";
 function UserProfile(props) {
   const navigate = useNavigate();
 
-  const [user, setUser] = React.useState({});
+  const [userDetails, setUserDetails] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    phoneNumber: "",
+  });
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
 
   useEffect(() => {
+    // console.log(localStorage.getItem("userId"));
+    // setUserId(localStorage.getItem("userId"));
+    let request = {userId: userId};
+    console.log(request);
     async function fetchData() {
-      await axios.post(`http://localhost:3306/user/profile`, props.user).then((res) => {
-        setUser(res.data);
-        console.log(res.data);
+      await axios.post(`http://localhost:3306/user/profile`, request).then((res) => {
+        setUserDetails(res.data[0]);
+        console.log(res.data[0]);
       });
     }
     fetchData();
@@ -28,12 +39,11 @@ function UserProfile(props) {
           <Typography>
           <h3>Profile</h3>
           <hr />
-            <p>First Name : {user.firstName}</p>
-            <p>Last Name : {user.lastName}</p>
-            <p>Email : {user.email}</p>
-            <p>Address : {user.address}</p>
-            <p>Phone Number : {user.phoneNumber}</p>
-            {props.user}
+            <p>First Name : {userDetails.firstName}</p>
+            <p>Last Name : {userDetails.lastName}</p>
+            <p>Email : {userDetails.email}</p>
+            <p>Address : {userDetails.address}</p>
+            <p>Phone Number : {userDetails.phoneNumber}</p>
             <hr />
             {/* <h3>Payment</h3>
             <hr />

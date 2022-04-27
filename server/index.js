@@ -91,9 +91,10 @@ app.get("/user/orders", (req, res) => {
 
 // });
 
-app.get("/user/profile", (req, res) => {
-  const sql = `SELECT * FROM users WHERE userId = ${req.body.user}`;
-  
+app.post("/user/profile", (req, res) => {
+  console.log(req.body);
+  const sql = `SELECT * FROM users WHERE userId = ${req.body.userId}`;
+  console.log("Hello");
     connection.query(sql, (err, result) => {
       if (err) {
           console.log(err);
@@ -102,6 +103,19 @@ app.get("/user/profile", (req, res) => {
       res.send(result);
     });
 
+});
+
+app.post("/user/update", (req, res) => {
+  console.log(req.body);
+  const sql = `UPDATE users SET address = "${req.body.address}", phoneNumber = "${req.body.phoneNumber}", password = "${req.body.newPassword}" WHERE userId = ${req.body.userId}`;
+  // console.log("Hello");
+    connection.query(sql, (err, result) => {
+      if (err) {
+          console.log(err);
+      }
+      console.log(result);
+      res.send(result);
+    });
 });
 
 app.post("/user/register", (req, res) => {

@@ -59,6 +59,10 @@ export default function UserSignIn(props) {
     setValues({ ...values, [event.target.id]: event.target.value });
   };
 
+  const setUser = (id) => {
+    props.setUser(id);
+  }
+
   // generate unique seller id
   const handleSignIn = async () => {
     // console.log(values);
@@ -84,10 +88,11 @@ export default function UserSignIn(props) {
         await axios
           .post("http://localhost:3306/user/signin", values)
           .then((res) => {
-              props.setUser(res.data[0].userId);
             if (res.data !== '') {
               setAlertOpen(true);
               setValues(defaultValues);
+              setUser(res.data[0].userId);
+              localStorage.setItem("userId", res.data[0].userId);
               navigate("/user/dashboard");
             } else {
               setAlertOpen(true);

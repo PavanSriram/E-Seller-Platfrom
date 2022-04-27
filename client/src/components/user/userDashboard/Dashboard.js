@@ -206,7 +206,12 @@ function DashboardContent(props) {
 const secondaryListItems = (
   // return (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton
+      onClick={() => {
+        localStorage.clear();
+        navigate("/user/signin");
+      }}
+    >
       <ListItemIcon>
         <LogoutIcon />
       </ListItemIcon>

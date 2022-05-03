@@ -13,24 +13,32 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
+import Chip from '@mui/material/Chip';
 import Switch from "@mui/material/Switch";
 import Fab from "@mui/material/Fab";
 import EditIcon from "@mui/icons-material/Edit";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
 import { Stack } from "@mui/material";
 import { Button } from "@mui/material";
-import { TextField, InputAdornment, SvgIcon } from "@mui/material";
+import {TextField, InputAdornment, SvgIcon,} from "@mui/material";
 import { createSvgIcon } from "@mui/material/utils";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { Link } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import SearchBy from "../searchBy";
+
+// const Alert = React.forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 const Search = createSvgIcon(
   <svg
@@ -47,27 +55,35 @@ const Search = createSvgIcon(
   "Search"
 );
 
-function createData(name, calories, fat, carbs, protein) {
+function createData(name, calories, fat, quantity, carbs, paymentId, protein) {
   return {
     name,
     calories,
     fat,
+    quantity,
     carbs,
+    paymentId,
     protein,
   };
 }
 
 const rows = [
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
-  createData("Pen Drive", "SanDisk", "Electronics", "599", "29"),
-  createData("School Bag", "Lunar", "Fashion", "9000", "400"),
-  createData("Harry Porter Box Set", "Bloom's Surry", "Hobbies", "50007", "15"),
-  createData("boAt Airdopes", "BOAT", "Electronics", "6000", "50"),
-  createData("Mi Power Bank", "Mi", "Electronics", "2000", "15"),
-  createData("Smart LED TV", "TCL", "Electronics", "10000", "30"),
+  createData("01", "OPPO A15", "OPPO", 12, "processing", "001", "12-11-2021"),
+  createData("02", "Acer Swift", "ACER", 2, "in transit", "012", "02-10-2021"),
+  createData("03", "Lenevo Ideopad", "LENEVO", 1, "processing", "013", "11-01-2021"),
+  createData("04", "HP Laptop", "HP", 3, "shipped", "017", "19-09-2021"),
+  createData("05", "DELL Laptop", "DELL", 5, "in transit", "215", "26-02-2021"),
+  createData("06", "U.S.POLO Men's Regular", "U.S.POLO", 6, "delivered", "212", "15-01-2021"),
+  createData("07", 237, 9.0, "processing", 4.3),
+  createData("08", 375, 0.0, "delivered", 0.0),
+  createData("09", 518, 26.0, "in transit", 7.0),
+  createData("10", 392, 0.2, "shipped", 0.0),
+  createData("11", 318, 0, "delivered", 2.0),
+  createData("12", 360, 19.0, "shipped", 37.0),
+  createData("13", 437, 18.0, "in transit", 4.0),
 ];
 
-const MyProductToolbar = (props) => {
+const OrdersToolbar = (props) => {
   return (
     <Toolbar
       sx={{
@@ -93,7 +109,7 @@ const MyProductToolbar = (props) => {
                 ),
               }}
               placeholder={props.searchBy}
-              variant="outlined"
+              variant="standard"
             />
           </Box>
           <Box sx={{ ml: 2 }}>
@@ -111,14 +127,19 @@ const MyProductToolbar = (props) => {
   );
 };
 
-export default function MyProduct() {
+export default function Orders() {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Product Name");
+  const [searchBy, setSearchBy] = React.useState("Order Id");
   const [headCells, setHeadCells] = React.useState([
+    {
+      label: "Order Id",
+      id: "orderId",
+      order: "asc",
+    },
     {
       id: "productName",
       label: "Product Name",
@@ -130,18 +151,23 @@ export default function MyProduct() {
       order: "asc",
     },
     {
-      id: "category",
-      label: "Category",
+      id: "quantity",
+      label: "Quantity",
       order: "asc",
     },
     {
-      id: "price",
-      label: "Price",
+      id: "orderStatus",
+      label: "Status",
       order: "asc",
     },
     {
-      id: "count",
-      label: "Count",
+      id: "paymentId",
+      label: "Payment Id",
+      order: "asc",
+    },
+    {
+      id: "deliveryDate",
+      label: "Delivery Date",
       order: "asc",
     },
   ]);
@@ -180,16 +206,30 @@ export default function MyProduct() {
     navigate("/seller/editproduct");
   };
 
+
   // Delete dialog code
   const [deleteOpen, setdeleteOpen] = React.useState(false);
 
   const handleDeleteClose = () => {
     setdeleteOpen(false);
+    setSnackOpen(true);
   };
 
   const handleDeleteButton = () => {
     setdeleteOpen(true);
   };
+  
+  // delete successfull snackbar at bottom
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
+  const handleDeleteSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -198,7 +238,7 @@ export default function MyProduct() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <MyProductToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
+        <OrdersToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -209,23 +249,21 @@ export default function MyProduct() {
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 {headCells.map((headCell) => (
-                    <TableCell
-                      key={headCell.id}
-                      align={headCell.id === "productName" ? "left" : "right"}
-                      padding={
-                        headCell.id === "productName" ? "none" : "normal"
-                      }
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.id === "orderId" ? "left" : "right"}
+                    padding={headCell.id === "orderId" ? "none" : "normal"}
+                  >
+                    <TableSortLabel
+                      direction={headCell.order}
+                      active="true"
+                      onClick={() => handleSortClick(headCell.id)}
                     >
-                      <TableSortLabel
-                        direction={headCell.order}
-                        active="true"
-                        onClick={() => handleSortClick(headCell.id)}
-                      >
-                        <Typography fontSize={"15px"} fontWeight="600">
-                          {headCell.label}
-                        </Typography>
-                      </TableSortLabel>
-                    </TableCell>
+                      <Typography fontSize={"15px"} fontWeight="600">
+                        {headCell.label}
+                      </Typography>
+                    </TableSortLabel>
+                  </TableCell>
                 ))}
                 <TableCell></TableCell>
               </TableRow>
@@ -247,22 +285,16 @@ export default function MyProduct() {
                         scope="row"
                         padding="none"
                       >
-                        <Link href="/seller/product" underline="none">{row.name}</Link>
+                        <Link href="/seller/order" underline="none">{row.name}</Link>
                       </TableCell>
-                      
-                      <TableCell align="right">{row.calories}</TableCell>
+                      <TableCell align="right"><Link href="/seller/product" underline="none">{row.calories}</Link></TableCell>
                       <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
+                      <TableCell align="right">{row.quantity}</TableCell>
+                      {/*can seller change the status of a order*/}
+                      <TableCell align="right"><Chip variant="outlined" color="info" label={row.carbs} size="small" /></TableCell>
+                      <TableCell align="right">{row.paymentId}</TableCell>
                       <TableCell align="right">{row.protein}</TableCell>
                       <TableCell align="right">
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          size="small"
-                          onClick={handleEditButton}
-                        >
-                          <EditIcon />
-                        </IconButton>
                         <IconButton
                           edge="end"
                           aria-label="delete"
@@ -302,16 +334,6 @@ export default function MyProduct() {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      <Fab
-        sx={{ position: "absolute", bottom: 50, right: 45 }}
-        color="primary"
-        variant="extended"
-        aria-label="add"
-        onClick={() => navigate("/seller/addproduct")}
-      >
-        <AddIcon sx={{ mr: 1 }} />
-        Add Product
-      </Fab>
 
       {/*Delete dialog box */}
       <div>
@@ -322,10 +344,12 @@ export default function MyProduct() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Do you really want to delete the product?"}
+            {"Do you really want to delete the Order?"}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description"></DialogContentText>
+            <DialogContentText id="alert-dialog-description">
+              
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDeleteClose}>NO</Button>
@@ -335,6 +359,11 @@ export default function MyProduct() {
           </DialogActions>
         </Dialog>
       </div>
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleDeleteSnackClose}>
+        <Alert onClose={handleDeleteSnackClose} severity="info" sx={{ width: '100%' }}>
+          Order Removed...!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

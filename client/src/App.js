@@ -1,8 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import SellerDashboard from "./components/seller/sellerDashboard/Dashboard";
 import UserDashboard from "./components/user/userDashboard/Dashboard";
-// import MyProduct from "./components/seller/sellerDashboard/MyProducts/MyProducts";
 import Home from "./components/user/Home.js";
 import Category from "./components/user/Category";
 import UserOrders from "./components/user/userDashboard/Orders"; 
@@ -17,25 +15,27 @@ import Sports from "./components/user/categories/Sports";
 import UserSignIn from "./components/user/UserSignIn";
 import UserRegister from "./components/user/UserRegister";
 
-import SellerDashboard from "./components/seller/sellerDashboard/Dashboard";
-import MyProduct from "./components/seller/sellerDashboard/MyProducts/MyProducts";
-import DashboardHome from "./components/seller/sellerDashboard/Home.js";
-import AddProduct from "./components/seller/sellerDashboard/MyProducts/addProduct";
-import Orders from "./components/seller/sellerDashboard/Orders";
-import Product from "./components/seller/sellerDashboard/Product";
-import Order from "./components/seller/sellerDashboard/Order";
-import Payments from "./components/seller/sellerDashboard/Payments";
-import Discounts from "./components/seller/sellerDashboard/Discounts";
-import AddDiscount from "./components/seller/sellerDashboard/AddDiscount";
-import Register from "./components/seller/sellerDashboard/register";
-import SellerProfile from "./components/seller/sellerDashboard/SellerProfile";
-import EditSellerProfile from "./components/seller/sellerDashboard/EditSellerProfile";
-import SignIn from "./components/seller/sellerDashboard/SignIn";
+import SellerDashboard from "./components/seller/Dashboard";
+import MyProduct from "./components/seller/MyProducts/MyProducts";
+import DashboardHome from "./components/seller/Home.js";
+import AddProduct from "./components/seller/MyProducts/addProduct";
+import Orders from "./components/seller/Orders/Orders";
+import Product from "./components/seller/MyProducts/Product";
+import Order from "./components/seller/Orders/Order";
+import Payments from "./components/seller/Payments";
+import Discounts from "./components/seller/Discounts/Discounts";
+import AddDiscount from "./components/seller/Discounts/AddDiscount";
+import Register from "./components/seller/Entry/register";
+import SellerProfile from "./components/seller/Profile/SellerProfile";
+import EditSellerProfile from "./components/seller/Profile/EditSellerProfile";
+import SignIn from "./components/seller/Entry/SignIn";
+import EditProduct from "./components/seller/MyProducts/editProduct";
 
 function App() {
 
-  const [user, setUser] = React.useState();
-  const [seller, setSeller] = React.useState();
+  const [user, setUser] = React.useState(0);
+  const [seller, setSeller] = React.useState(0);
+  const [productInfo, setProductInfo] = React.useState();
 
   return (
     <Router>
@@ -54,23 +54,23 @@ function App() {
         <Route path='/user/signin' element={<UserSignIn setUser={setUser} />} />
         <Route path='/user/register' element={<UserRegister />} />
 
-      <Route exact path='/seller/dashboard' element={<SellerDashboard header="Dashboard" child={<DashboardHome/>}/>} />
-      <Route exact path='/seller/myproducts' element={<SellerDashboard header="My Products" child={<MyProduct/>}/>} />
-      <Route exact path='/seller/addproduct' element={<SellerDashboard header="My Products" child={<AddProduct/>}/>} />
-      <Route exact path='/seller/editproduct' element={<SellerDashboard header="MY Products" child={<AddProduct/>}/>} />
-      <Route exact path='/seller/orders' element={<SellerDashboard header="Orders" child={<Orders/>}/>} />
-      <Route exact path='/seller/product' element={<SellerDashboard header="My Products" child={<Product/>}/>} />
-      <Route exact path='/seller/order' element={<SellerDashboard header="Orders" child={<Order/>}/>} />
-      <Route exact path='/seller/payments' element={<SellerDashboard header="Payments" child={<Payments/>}/>} />
-      <Route exact path='/seller/discounts' element={<SellerDashboard header="Discounts" child={<Discounts/>}/>} />
-      <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
-      <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount/>}/>} />
-      <Route exact path='/seller/register' element={<Register/>} />
-      <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller} />} />
-      <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile/>}/>} />
-      <Route exact path='/seller/editsellerprofile' element={<SellerDashboard header="Profile" child={<EditSellerProfile/>} />}/>
-    </Routes>
-  </Router>
+        <Route exact path='/seller/dashboard' element={<SellerDashboard header="Dashboard" child={<DashboardHome sellerId={seller}/>}/>} />
+        <Route exact path='/seller/myproducts' element={<SellerDashboard header="My Products" child={<MyProduct sellerId={seller} setproductInfo={setProductInfo}/>}/>} />
+        <Route exact path='/seller/addproduct' element={<SellerDashboard header="My Products" child={<AddProduct sellerId={seller}/>}/>} />
+        <Route exact path='/seller/editproduct' element={<SellerDashboard header="My Products" child={<EditProduct sellerId={seller}/>}/>} />
+        <Route exact path='/seller/orders' element={<SellerDashboard header="Orders" child={<Orders sellerId={seller}/>}/>} />
+        <Route exact path='/seller/product' element={<SellerDashboard header="My Products" child={<Product sellerId={seller} productInfo={productInfo}/>}/>} />
+        <Route exact path='/seller/order' element={<SellerDashboard header="Orders" child={<Order sellerId={seller}/>}/>} />
+        <Route exact path='/seller/payments' element={<SellerDashboard header="Payments" child={<Payments sellerId={seller}/>}/>} />
+        <Route exact path='/seller/discounts' element={<SellerDashboard header="Discounts" child={<Discounts sellerId={seller}/>}/>} />
+        <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
+        <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
+        <Route exact path='/seller/register' element={<Register setSeller={setSeller}/>} />
+        <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller} setUser={setUser} />} />
+        <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile sellerId={seller}/>}/>} />
+        <Route exact path='/seller/editsellerprofile' element={<SellerDashboard header="Profile" child={<EditSellerProfile sellerId={seller}/>} />}/>
+      </Routes>
+    </Router>
   );
 }
 

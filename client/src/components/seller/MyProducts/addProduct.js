@@ -17,26 +17,27 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 
 export default function AddProduct(props) {
-  let sellerId = 2;
+
   const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertOpenError, setAlertOpenError] = React.useState(false);
+  const categories = ["A", "B", "C", "D", "E"];
+  const subCategories = ["A", "B", "C", "D", "E"];
   let defaultValues = {
-    sellerId: 0,
+    sellerId: props.sellerId,
     productName: "",
     brand: "",
     title: "",
-    category: "A",
-    subCategory: "B",
     description: "",
+    category: categories[0],
+    subCategory: subCategories[0],
     price: "",
     quantity: "",
     discountId: "",
     dimensions: "",
     numberOfOrders: 0,
   };
-
-  if (!props) {
-    defaultValues = [...props];
-  }
+  
+  
   const [values, setValues] = React.useState(defaultValues);
   const [errors, setErrors] = React.useState({
     productName: "",
@@ -49,14 +50,23 @@ export default function AddProduct(props) {
     dimensions: "",
   });
 
-  const categories = ["A", "B", "C", "D", "E"];
-  const subCategories = ["A", "B", "C", "D", "E"];
+  
+  const [category, setCategory] = React.useState(categories[0]);
+  const [subCategory, setSubCategory] = React.useState(subCategories[0]);
 
+  const handleCategoryDropdown = (event) => {
+    setCategory(event.target.value);
+    setValues({ ...values, ["category"]: event.target.value });
+  }
+  const handleSubCategoryDropdown = (event) => {
+    setSubCategory(event.target.value);
+    setValues({ ...values, ["subCategory"]: event.target.value });
+  }
+  
   const handleChange = (event) => {
     setValues({ ...values, [event.target.id]: event.target.value });
   };
 
-  // handle error for duplicate products
   const handleAdd = async () => {
     let newErrors = {
       productName: "",
@@ -98,17 +108,17 @@ export default function AddProduct(props) {
 
     setErrors(newErrors);
     if(flag === true){
-      values.sellerId = sellerId++;
       values.numberOfOrders = 0;
       await axios.post("http://localhost:3308/seller/addProduct", values).then((res) => {
-        if (res.data.status === "success") {
-          setAlertOpen(true);
+        console.log("hi", res);
+        if (res.data.length !== 0) {
           setValues(defaultValues);
-        } else {
           setAlertOpen(true);
+        } else {
+          setAlertOpenError(true);
         }
       });
-      setAlertOpen(true);
+      
     }
   };
 
@@ -133,6 +143,27 @@ export default function AddProduct(props) {
           color="info"
         >
           Product Added Successfully...
+        </Alert>
+      </Collapse>
+      <Collapse in={alertOpenError}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setAlertOpenError(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+          severity="error"
+          color="error"
+        >
+          Error: Duplicate Product...!
         </Alert>
       </Collapse>
       <Card>
@@ -178,8 +209,8 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.category}
               label="Select Category"
-              value={values.category}
-              onChange={handleChange}
+              value={category}
+              onChange={handleCategoryDropdown}
               //   helperText="Please select your currency"
             >
               {categories.map((option) => (
@@ -196,9 +227,8 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.subCategory}
               label="Select Sub Category"
-              value={values.subCategory}
-              onChange={handleChange}
-              //   helperText="Please select your currency"
+              value={subCategory}
+              onChange={handleSubCategoryDropdown}
             >
               {subCategories.map((option) => (
                 <MenuItem key={option} value={option}>

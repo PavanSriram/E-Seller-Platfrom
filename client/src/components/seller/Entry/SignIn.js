@@ -16,8 +16,8 @@ import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
 import Snackbar from '@mui/material/Snackbar';
-import { useNavigate } from "react-router";
 
+import { useNavigate } from "react-router";
 
 // const Alert = React.forwardRef(function Alert(props, ref) {
 //   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -25,17 +25,13 @@ import { useNavigate } from "react-router";
 
 const theme = createTheme();
 
-export default function UserSignIn(props) {
+export default function SignIn(props) {
   // sign in successfull snackbar at bottom
-  const navigate = useNavigate();
-   
   const [snackOpen, setSnackOpen] = React.useState(false);
-
   const handleSnackClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setSnackOpen(false);
   };
 
@@ -48,6 +44,8 @@ export default function UserSignIn(props) {
     setSnackOpenError(false);
   };
 
+  const navigate = useNavigate();
+
   let defaultValues = {
     email: "",
     password: "",
@@ -56,6 +54,10 @@ export default function UserSignIn(props) {
   // if (!props) {
   //   defaultValues = [...props];
   // }
+
+  const setSeller = (id) => {
+    props.setSeller(id);
+  }
 
   const [values, setValues] = React.useState(defaultValues);
   const [errors, setErrors] = React.useState({
@@ -67,12 +69,8 @@ export default function UserSignIn(props) {
     setValues({ ...values, [event.target.id]: event.target.value });
   };
 
-  const setUser = (id) => {
-    props.setUser(id);
-  }
-
   // generate unique seller id
-  const handleSignIn = async () => {
+  const handleAdd =  async() => {
     // console.log(values);
     let newErrors = {
       email: "",
@@ -86,31 +84,33 @@ export default function UserSignIn(props) {
       flag = false;
     }
 
-    if (values.password === 0) {
+    if (values.password === "") {
       newErrors["password"] = "error";
-        flag = false;
+      flag = false;
     }
 
     setErrors(newErrors);
-    if (flag === true) {
-        await axios
-          .post("http://localhost:3308/user/signin", values)
+    if(flag){
+      await axios
+          .post("http://localhost:3308/seller/signin", values)
           .then((res) => {
+            
             if (res.data.length !== 0) {
+              console.log("signin", res);
               setValues(defaultValues);
-              setUser(res.data[0].userId);
-              localStorage.setItem("userId", res.data[0].userId);
-              navigate("/user/dashboard");
+              setSeller(res.data[0].sellerId);
+              localStorage.setItem("sellerId", res.data[0].sellerId);
+              navigate("/seller/dashboard");
               setSnackOpen(true);
-            } 
+            }
             else {
               // console.log("res", res);
               setValues(defaultValues);
               setSnackOpenError(true);
             }
           });
-        
-      }
+      
+    }
   };
 
   return (
@@ -163,7 +163,7 @@ export default function UserSignIn(props) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleSignIn}
+              onClick={handleAdd}
             >
               Sign In
             </Button>

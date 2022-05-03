@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Deposits from "./Deposits";
+// import Deposits from "./Deposits";
 // import Orders from "./Orders";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
@@ -50,7 +50,7 @@ function DashboardHome() {
               height: 240,
             }}
           >
-            <Deposits />
+            {/* <Deposits /> */}
           </Paper>
         </Grid>
         {/* Recent Orders */}

@@ -47,7 +47,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function SearchBy(props) {
-  console.log("searchby", props);
+  // console.log("searchby", props);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -81,9 +81,10 @@ export default function SearchBy(props) {
         open={open}
         onClose={() => handleClose(props.searchby)}
       >
+        <MenuItem onClick={() => handleClose("All")}>All</MenuItem>
         {
           props.searchList.map((item) => (
-            <MenuItem onClick={() => handleClose(item.label)}>{item.label}</MenuItem>
+            <MenuItem onClick={() => handleClose(item.id)}>{item.id}</MenuItem>
           ))
         }
       </StyledMenu>

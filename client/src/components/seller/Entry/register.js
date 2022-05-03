@@ -14,28 +14,36 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
-
 import Snackbar from '@mui/material/Snackbar';
-
-
-// const Alert = React.forwardRef(function Alert(props, ref) {
-//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-// });
+import axios from "axios";
+import { useNavigate } from "react-router";
 
 const theme = createTheme();
 
-export default function SignIn(props) {
-  // sign in successfull snackbar at bottom
+export default function Register(props) {
+  const navigate = useNavigate();
+
+  // register successfull snackbar at bottom
   const [snackOpen, setSnackOpen] = React.useState(false);
+
+  const [alertOpen, setAlertOpen] = React.useState(false);
 
   const handleSnackClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setSnackOpen(false);
   };
 
+  // register not successfull snackbar at bottom
+  const [snackOpenError, setSnackOpenError] = React.useState(false);
+  const handleSnackCloseError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackOpenError(false);
+  };
+  
   let defaultValues = {
     firstName: "",
     lastName: "",
@@ -67,7 +75,7 @@ export default function SignIn(props) {
   };
 
   // generate unique seller id
-  const handleAdd = () => {
+  const handleAdd = async () => {
     console.log(values);
     let newErrors = {
       firstName: "",
@@ -80,36 +88,68 @@ export default function SignIn(props) {
       password: "",
     };
 
+    let flag = true;
+
     if (values.firstName === "") {
       newErrors["firstName"] = "error";
+      flag = false;
     }
 
     if (values.lastName === "") {
       newErrors["lastName"] = "error";
+      flag = false;
     }
 
     if (values.email === "") {
       newErrors["email"] = "error";
+      flag = false;
     }
 
     if (values.address === "") {
       newErrors["address"] = "error";
+      flag = false;
     }
 
     if (values.phoneNumber === "" || values.phoneNumber.length !== 10) {
       newErrors["phoneNumber"] = "error";
+      flag = false;
     }
 
     if (values.companyName === "") {
       newErrors["companyName"] = "error";
+      flag = false;
     }
 
     if (values.password.length < 7) {
       newErrors["password"] = "error";
+      flag = false;
     }
 
     setErrors(newErrors);
-    setSnackOpen(true);
+    if(flag === true){
+      await axios
+        .post("http://localhost:3308/seller/check", values)
+        .then((res) => {
+          if (res.data.length !== 0) {
+            console.log("res", res);
+            flag = false;
+          }
+        });
+
+      if(flag){
+        setSnackOpen(true);
+        await axios.post("http://localhost:3308/seller/register", values).then((res) => {
+          if (res.data.length !== 0) {
+            setValues(defaultValues);
+            navigate("/seller/signin");
+          } 
+        });
+      }
+      else {
+        setValues(defaultValues);
+        setSnackOpenError(true);
+      }
+    }
   };
 
   return (
@@ -124,14 +164,40 @@ export default function SignIn(props) {
             alignItems: "center",
           }}
         >
+          
           <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign In
+            Register
           </Typography>
-          <Box sx={{ mt: 3 }}>
+          <Box
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  required
+                  id="firstName"
+                  label="First Name"
+                  error={errors.firstName}
+                  value={values.firstName}
+                  onChange={handleChange}
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  required
+                  id="lastName"
+                  label="Last Name"
+                  error={errors.lastName}
+                  value={values.lastName}
+                  onChange={handleChange}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -147,11 +213,47 @@ export default function SignIn(props) {
                 <TextField
                   fullWidth
                   required
-                  label="Password"
+                  label="Password (must contain atleast 7 characters)"
                   type="password"
                   id="password"
                   error={errors.password}
                   value={values.password}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  required
+                  id="companyName"
+                  label="Company Name"
+                  error={errors.companyName}
+                  value={values.companyName}
+                  onChange={handleChange}
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  required
+                  id="phoneNumber"
+                  label="Phone Number"
+                  error={errors.phoneNumber}
+                  value={values.phoneNumber}
+                  onChange={handleChange}
+                  type="number"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  required
+                  id="address"
+                  label="Address"
+                  error={errors.address}
+                  value={values.address}
                   onChange={handleChange}
                 />
               </Grid>
@@ -164,23 +266,17 @@ export default function SignIn(props) {
               sx={{ mt: 3, mb: 2 }}
               onClick={handleAdd}
             >
-              Sign In
+              Register
             </Button>
 
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
+            <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Don't have an account? Register"}
+                  Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
-          </Box>
-          <Snackbar
+            <Snackbar
             open={snackOpen}
             autoHideDuration={6000}
             onClose={handleSnackClose}
@@ -190,9 +286,23 @@ export default function SignIn(props) {
               severity="info"
               sx={{ width: "100%" }}
             >
-              Welcome Back...!
+              You are registered successfully...!
             </Alert>
           </Snackbar>
+          <Snackbar
+            open={snackOpenError}
+            autoHideDuration={6000}
+            onClose={handleSnackCloseError}
+          >
+            <Alert
+              onClose={handleSnackCloseError}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              User already exists...!
+            </Alert>
+          </Snackbar>
+          </Box>
         </Box>
       </Container>
     </ThemeProvider>

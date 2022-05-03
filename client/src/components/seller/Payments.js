@@ -99,7 +99,7 @@ const PaymentsToolbar = (props) => {
                 ),
               }}
               placeholder={props.searchBy}
-              variant="outlined"
+              variant="standard"
             />
           </Box>
           <Box sx={{ ml: 2 }}>

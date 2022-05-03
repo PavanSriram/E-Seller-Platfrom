@@ -103,7 +103,7 @@ function getComponent(){
 }
 
 const DashboardContent = (props) => {
-  console.log(props.child);
+  // console.log(props.child);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);

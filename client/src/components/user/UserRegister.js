@@ -21,19 +21,25 @@ import { useNavigate } from "react-router";
 const theme = createTheme();
 
 export default function UserRegister(props) {
-  // sign in successfull snackbar at bottom
+  // register successfull snackbar at bottom
   const navigate = useNavigate();
 
   const [snackOpen, setSnackOpen] = React.useState(false);
-
-  const [alertOpen, setAlertOpen] = React.useState(false);
-
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
     setSnackOpen(false);
+  };
+
+  // register not successfull snackbar at bottom
+  const [snackOpenError, setSnackOpenError] = React.useState(false);
+  const handleSnackCloseError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackOpenError(false);
   };
 
   let defaultValues = {
@@ -110,18 +116,29 @@ export default function UserRegister(props) {
     setErrors(newErrors);
     if (flag === true) {
       await axios
-        .post("http://localhost:3308/user/register", values)
+        .post("http://localhost:3308/user/check", values)
         .then((res) => {
-            console.log(res);
-          if (res.data !== '') {
-            setAlertOpen(true);
-            setValues(defaultValues);
-            gotoSignIn();
-          } else {
-            setAlertOpen(true);
+          if (res.data.length !== 0) {
+            flag = false;
           }
         });
-      setAlertOpen(true);
+      
+      if(flag){
+        await axios
+          .post("http://localhost:3308/user/register", values)
+          .then((res) => {
+            if (res.data.length !== 0) {
+              setSnackOpen(true);
+              setValues(defaultValues);
+              gotoSignIn();
+            } 
+          });
+       }
+       else {
+        setValues(defaultValues);
+        setSnackOpenError(true);
+      }
+      
     }
 
   };
@@ -248,6 +265,19 @@ export default function UserRegister(props) {
                 You are registered successfully...!
               </Alert>
             </Snackbar>
+            <Snackbar
+            open={snackOpenError}
+            autoHideDuration={6000}
+            onClose={handleSnackCloseError}
+          >
+            <Alert
+              onClose={handleSnackCloseError}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              User Already exists...!
+            </Alert>
+          </Snackbar>
           </Box>
         </Box>
       </Container>

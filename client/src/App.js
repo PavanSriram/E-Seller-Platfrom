@@ -1,4 +1,5 @@
 import React from "react";
+import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UserDashboard from "./components/user/userDashboard/Dashboard";
 import Home from "./components/user/Home.js";
@@ -40,6 +41,7 @@ function App() {
   return (
     <Router>
       <Routes>
+      <Route path="/" element={ <Navigate to="/user/signin" /> } />
         <Route path='/user/dashboard' element={<UserDashboard child={<Home user={user} />}/>} />
         {/* <Route path='/user/category' element={<UserDashboard child={<Category />}/>} /> */}
         <Route path='/user/orders' element={<UserDashboard child={<UserOrders user={user}/>}/>} />
@@ -66,7 +68,7 @@ function App() {
         <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
         <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
         <Route exact path='/seller/register' element={<Register setSeller={setSeller}/>} />
-        <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller} setUser={setUser} />} />
+        <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller}  />} />
         <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile sellerId={seller}/>}/>} />
         <Route exact path='/seller/editsellerprofile' element={<SellerDashboard header="Profile" child={<EditSellerProfile sellerId={seller}/>} />}/>
       </Routes>

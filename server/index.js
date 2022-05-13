@@ -330,7 +330,6 @@ async function main() {
           })
           .then(function (result) {
             res.json(result);
-            8;
             console.log("inserted Id", result.insertedId);
           });
       });
@@ -349,6 +348,20 @@ async function main() {
             console.log("inserted Id", result.insertedId);
           });
       });
+
+      app.get("/getimage/:sellerId/:brand/:productName", (req, res) => {
+        // console.log("HELLO!!")
+        // console.log(req.params.sellerId);
+        const result = db
+          .collection("images")
+          .findOne({ productName: req.params.productName, brand: req.params.brand, sellerId: req.params.sellerId })
+          .then(function (result) {
+            res.json(result);
+            console.log(result);
+            // console.log("image successfully returned");
+          });
+      });
+
     });
   } catch (e) {
     console.error(e);

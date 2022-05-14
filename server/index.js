@@ -68,6 +68,34 @@ app.get("/allproducts/:sellerId", (req, res) => {
   });
 });
 
+app.get("/orders/:sellerId", (req, res) => {
+  const sql = `SELECT * FROM Orders WHERE sellerId = ${req.params.sellerId}`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/payments/:sellerId", (req, res) => {
+  const sql = `SELECT Payments.*
+                FROM (
+                        SELECT * 
+                        FROM Orders 
+                        WHERE sellerId = ${req.params.sellerId}
+                ) AS T , Payments
+                WHERE T.orderId = Payments.orderId`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
 app.get("/allproducts/search/:sellerId/:searchBy/:text", (req, res) => {
   let sql;
   if(req.params.searchBy === "All")
@@ -85,12 +113,105 @@ app.get("/allproducts/search/:sellerId/:searchBy/:text", (req, res) => {
   });
 });
 
+app.get("/orders/search/:sellerId/:searchBy/:text", (req, res) => {
+  let sql;
+  if(req.params.searchBy === "All")
+    sql = `SELECT * 
+            FROM Orders 
+            WHERE sellerId = "${req.params.sellerId}" and 
+                  (
+                    (productName LIKE "%${req.params.text}%") or 
+                    (orderId LIKE "%${req.params.text}%") or 
+                    (brand LIKE "%${req.params.text}%") or 
+                    (quantity LIKE "%${req.params.text}%") or 
+                    (status LIKE "%${req.params.text}%") or 
+                    (paymentId LIKE "%${req.params.text}%") or 
+                    (deliveryDate LIKE "%${req.params.text}%")
+                  )`;
+  else
+    sql = `SELECT * 
+            FROM Orders 
+            WHERE sellerId = "${req.params.sellerId}" and 
+                  (${req.params.searchBy} LIKE "%${req.params.text}%")`;
+    
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/payments/search/:sellerId/:searchBy/:text", (req, res) => {
+  let sql;
+  if(req.params.searchBy === "All")
+    sql = `SELECT T2.* 
+            FROM (
+                    SELECT Payments.*
+                    FROM  (
+                            SELECT * 
+                            FROM Orders 
+                            WHERE sellerId = ${req.params.sellerId}
+                          ) AS T1 , Payments
+                    WHERE T1.orderId = Payments.orderId
+            ) AS T2
+            WHERE (
+                    (T2.paymentId LIKE "%${req.params.text}%") or 
+                    (T2.orderId LIKE "%${req.params.text}%") or 
+                    (T2.amount LIKE "%${req.params.text}%") or 
+                    (T2.paymentMode LIKE "%${req.params.text}%") or 
+                    (T2.paymentStatus LIKE "%${req.params.text}%")
+            )`;
+  else
+    sql = `SELECT T2.* 
+            FROM (
+                    SELECT Payments.*
+                    FROM  (
+                            SELECT * 
+                            FROM Orders 
+                            WHERE sellerId = ${req.params.sellerId}
+                          ) AS T1 , Payments
+                    WHERE T1.orderId = Payments.orderId
+            ) AS T2 
+            WHERE (${req.params.searchBy} LIKE "%${req.params.text}%")`;
+    
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
 app.get("/allproducts/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
   let sql;
   if(req.params.searchBy !== "All")
-    sql = `SELECT * FROM (SELECT * FROM Products WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")) as T ORDER BY T.${req.params.id} ${req.params.order}`;
+    sql = `SELECT * 
+            FROM (
+                    SELECT * 
+                    FROM Products 
+                    WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")
+                  ) as T 
+            ORDER BY T.${req.params.id} ${req.params.order}`;
   else
-    sql = `SELECT * FROM (SELECT * FROM Products WHERE sellerId = "${req.params.sellerId}" and ((productName LIKE "%${req.params.text}%") or (category LIKE "%${req.params.text}%") or (brand LIKE "%${req.params.text}%") or (price LIKE "%${req.params.text}%") or (quantity LIKE "%${req.params.text}%"))) as T ORDER BY T.${req.params.id} ${req.params.order}`;
+    sql = `SELECT * 
+            FROM (
+                    SELECT * 
+                    FROM Products 
+                    WHERE sellerId = "${req.params.sellerId}" and 
+                          (
+                            (productName LIKE "%${req.params.text}%") or 
+                            (category LIKE "%${req.params.text}%") or 
+                            (brand LIKE "%${req.params.text}%") or 
+                            (price LIKE "%${req.params.text}%") or 
+                            (quantity LIKE "%${req.params.text}%")
+                          )
+                  ) as T 
+            ORDER BY T.${req.params.id} ${req.params.order}`;
   console.log("SQL", sql);
   connection.query(sql, (err, result) => {
     if (err) {
@@ -102,7 +223,116 @@ app.get("/allproducts/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => 
 });
 
 app.get("/allproducts/sort/:sellerId/:id/:order", (req, res) => {
-  let sql = `SELECT * FROM (SELECT * FROM Products WHERE sellerId = "${req.params.sellerId}") as T ORDER BY T.${req.params.id} ${req.params.order}`;
+  let sql = `SELECT * 
+              FROM (
+                      SELECT * 
+                      FROM Products 
+                      WHERE sellerId = "${req.params.sellerId}"
+                    ) as T 
+              ORDER BY T.${req.params.id} ${req.params.order}`;
+  
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});   
+
+app.get("/payments/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
+  let sql;
+  if(req.params.searchBy !== "All")
+    sql = `SELECT T.* 
+            FROM (
+                    SELECT T2.* 
+                    FROM (
+                            SELECT Payments.*
+                            FROM  (
+                                    SELECT * 
+                                    FROM Orders 
+                                    WHERE sellerId = ${req.params.sellerId}
+                            ) AS T1 , Payments
+                            WHERE T1.orderId = Payments.orderId
+                    ) AS T2
+                    WHERE (${req.params.searchBy} LIKE "%${req.params.text}%")
+            ) as T 
+            ORDER BY T.${req.params.id} ${req.params.order}`;
+  else
+    sql = `SELECT T.* 
+            FROM (
+                    SELECT T2.* 
+                    FROM (
+                            SELECT Payments.*
+                            FROM  (
+                                    SELECT * 
+                                    FROM Orders 
+                                    WHERE sellerId = ${req.params.sellerId}
+                                  ) AS T1 , Payments
+                            WHERE T1.orderId = Payments.orderId
+                    ) AS T2
+                    WHERE (
+                            (T2.paymentId LIKE "%${req.params.text}%") or 
+                            (T2.orderId LIKE "%${req.params.text}%") or 
+                            (T2.amount LIKE "%${req.params.text}%") or 
+                            (T2.paymentMode LIKE "%${req.params.text}%") or 
+                            (T2.paymentStatus LIKE "%${req.params.text}%")
+                    )
+              ) as T 
+              ORDER BY T.${req.params.id} ${req.params.order}`;
+
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  }); 
+});
+
+app.get("/payments/sort/:sellerId/:id/:order", (req, res) => {
+  let sql = `SELECT T.* 
+              FROM (
+                SELECT Payments.*
+                FROM  (
+                        SELECT * 
+                        FROM Orders 
+                        WHERE sellerId = ${req.params.sellerId}
+                      ) AS T1 , Payments
+                WHERE T1.orderId = Payments.orderId
+              ) as T 
+              ORDER BY T.${req.params.id} ${req.params.order}`;
+  
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/orders/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
+  let sql;
+  if(req.params.searchBy !== "All")
+    sql = `SELECT * FROM (SELECT * FROM Orders WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")) as T ORDER BY T.${req.params.id} ${req.params.order}`;
+  else
+    sql = `SELECT * FROM (SELECT * FROM Orders WHERE sellerId = "${req.params.sellerId}" and ((productName LIKE "%${req.params.text}%") or (orderId LIKE "%${req.params.text}%") or (brand LIKE "%${req.params.text}%") or (quantity LIKE "%${req.params.text}%") or (status LIKE "%${req.params.text}%") or (paymentId LIKE "%${req.params.text}%") or (deliveryDate LIKE "%${req.params.text}%"))) as T ORDER BY T.${req.params.id} ${req.params.order}`;
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  }); 
+});
+
+app.get("/orders/sort/:sellerId/:id/:order", (req, res) => {
+  let sql = `SELECT * FROM (SELECT * FROM Orders WHERE sellerId = "${req.params.sellerId}") as T ORDER BY T.${req.params.id} ${req.params.order}`;
   
   console.log("SQL", sql);
   connection.query(sql, (err, result) => {
@@ -269,32 +499,19 @@ app.delete(
   }
 );
 
-app.get("/seller/orders", (req, res) => {
-  const sql = `SELECT * FROM Orders WHERE sellerId = ${req.body.sellerId}`;
-
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(result);
-    res.send(result);
-  });
-});
-
-// const cartRouter = require('./routes/cart.js');
-// app.use('/usercart', cartRouter);
-
-// async function findCart(client, id){
-//   const result = await client.db("user").collections("cart").findOne({_id: id});
-//   if(result) {
-//     console.log(`Found cart item '${id}'`);
-//     console.log(result);
-//   }
-//   else {
-//     console.log("No item found");
-//   }
-//   return result;
-// }
+app.delete(
+  "/seller/deleteOrder/:sellerId/:productName/:brand",
+  (req, res) => {
+    const sql = `DELETE FROM Orders WHERE sellerId = "${req.params.sellerId}" and productName = "${req.params.productName}" and brand = "${req.params.brand}"`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        console.log("Error : ", err);
+      }
+      console.log("Delete", result);
+      res.send(result);
+    });
+  }
+);
 
 const { MongoClient } = require("mongodb");
 let client;

@@ -12,23 +12,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
-import Fab from "@mui/material/Fab";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
 import { Stack } from "@mui/material";
 import { Button } from "@mui/material";
 import { TextField, InputAdornment, SvgIcon } from "@mui/material";
 import { createSvgIcon } from "@mui/material/utils";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { Link, Chip } from "@mui/material";
+import axios from "axios";
+import { useEffect } from "react";
 
 import SearchBy from "./searchBy";
 
@@ -47,83 +39,16 @@ const Search = createSvgIcon(
   "Search"
 );
 
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData("pid_012", "01", 10000, "Credit Card", "Done"),
-  createData("pid_013", "02", 90000, "Debit Card", "Done"),
-  createData("pid_016", "03", 85400, "Cash On Delivery", "In Progress"),
-  createData("pid_018", "04", 65000, "Credit Card", "Done"),
-  createData("pid_023", "05", 65000, "Credit Card", "Done"),
-  createData("pid_045", "06", 5000, "Cash On Delivery", "Done"),
-  createData("pid_010", "07", 9.0, 37, 4.3),
-  createData("pid_035", "08", 0.0, 94, 0.0),
-  createData("pid_019", "09", 26.0, 65, 7.0),
-  createData("pid_011", "10", 0.2, 98, 0.0),
-  createData("pid_024", "11", 0, 81, 2.0),
-  createData("pid_089", "12", 19.0, 9, 37.0),
-  createData("pid_022", "13", 18.0, 63, 4.0),
-];
-
-const PaymentsToolbar = (props) => {
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
-      <Box sx={{ mt: 5, mb: 3 }}>
-        {/* <Card>
-          <CardContent> */}
-        <Stack direction={"row"}>
-          <Box sx={{ maxWidth: 800, minWidth: 400 }}>
-            <TextField
-              fullWidth
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
-                      <Search />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder={props.searchBy}
-              variant="standard"
-            />
-          </Box>
-          <Box sx={{ ml: 2 }}>
-            <SearchBy
-              searchBy={props.searchBy}
-              handleSearchBy={props.handleSearchBy}
-              searchList={props.searchList}
-            />
-          </Box>
-        </Stack>
-        {/* </CardContent>
-        </Card> */}
-      </Box>
-    </Toolbar>
-  );
-};
-
 export default function Payments() {
   const navigate = useNavigate();
+  const [sellerId, setUserId] = React.useState(localStorage.getItem("sellerId"));
 
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Payment Id");
+  const [searchBy, setSearchBy] = React.useState("paymentId");
+  const [searchText, setSearchText] = React.useState();
+  const [searchedText, setSearchedText] = React.useState('');
   const [headCells, setHeadCells] = React.useState([
     {
       id: "paymentId",
@@ -152,20 +77,49 @@ export default function Payments() {
     },
   ]);
 
+  const [payments, setPayments] = React.useState([{
+    orderId:"",
+    paymentId: "",
+    amount: "",
+    paymentMode: "",
+    paymentStatus: "",
+  }]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await axios.get(`http://localhost:3308/payments/'${sellerId}'`).then((res) => {
+        setPayments(res.data);
+      });
+    }
+    fetchData();
+  }, []);
+
   const handleSearchBy = (searchby) => {
     if (searchby) setSearchBy(searchby);
   };
 
-  const handleSortClick = (id) => {
+  const handleSortClick = async (id) => {
+    let order = "asc";
     let cells = headCells.map((cell) => {
       if (cell.id === id) {
-        if (cell.order === "asc") cell.order = "desc";
+        if (cell.order === "asc") {cell.order = "desc"; order='desc'}
         else cell.order = "asc";
       }
       return cell;
     });
-    // console.log(cells);
     setHeadCells(cells);
+
+    // console.log("text", searchedText.length);
+    if(searchedText.length !== 0){
+      await axios.get(`http://localhost:3308/payments/sort/${sellerId}/${searchBy}/${searchedText}/${id}/${order}`).then((res) => {
+        setPayments(res.data);
+      });
+    }
+    else{
+      await axios.get(`http://localhost:3308/payments/sort/${sellerId}/${id}/${order}`).then((res) => {
+        setPayments(res.data);
+      });
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -181,15 +135,77 @@ export default function Payments() {
     setDense(event.target.checked);
   };
 
+  // search
+  const handleSearchText = (event) =>{
+    setSearchText(event.target.value);
+  }
+  const handleSearch = async (event) =>{
+    // console.log("text", searchText.length);
+    setSearchedText(searchText);
+    if(searchText.length !== 0){
+      await axios.get(`http://localhost:3308/payments/search/${sellerId}/${searchBy}/${searchText}`).then((res) => {
+        setPayments(res.data);
+      });
+    }
+    else{
+      await axios.get(`http://localhost:3308/payments/'${sellerId}'`).then((res) => {
+        setPayments(res.data);
+      });
+    }
+    
+  }
+
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - payments.length) : 0;
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <PaymentsToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
+      <Toolbar
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 },
+          }}
+        >
+          <Box sx={{ mt: 5, mb: 3 }}>
+            {/* <Card>
+              <CardContent> */}
+            <Stack direction={"row"}>
+              <Box sx={{ maxWidth: 800, minWidth: 400 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  className="searchBar"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button color="primary" onClick={handleSearch}>
+                          <SvgIcon fontSize="small" color="action">
+                            <Search />
+                          </SvgIcon>
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={handleSearchText}
+                  placeholder={searchBy}
+                  variant="standard"
+                />
+              </Box>
+              <Box sx={{ ml: 2 }}>
+                <SearchBy
+                  searchBy={searchBy}
+                  handleSearchBy={handleSearchBy}
+                  searchList={headCells}
+                />
+              </Box>
+            </Stack>
+            {/* </CardContent>
+            </Card> */}
+          </Box>
+        </Toolbar>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -223,13 +239,13 @@ export default function Payments() {
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {rows
+              {payments
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((payment, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow role="checkbox" tabIndex={-1} key={row.name}>
+                    <TableRow role="checkbox" tabIndex={-1} key={payment.paymentId}>
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell
                         component="th"
@@ -237,13 +253,13 @@ export default function Payments() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {payment.paymentId}
                       </TableCell>
                       
-                      <TableCell align="right"><Link href="/seller/product" underline="none">{row.calories}</Link></TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right"><Chip variant="outlined" color="info" label={row.protein} size="small" /></TableCell>
+                      <TableCell align="right">{payment.orderId}</TableCell>
+                      <TableCell align="right">{payment.amount}</TableCell>
+                      <TableCell align="right">{payment.paymentMode}</TableCell>
+                      <TableCell align="right"><Chip variant="outlined" color="info" label={payment.paymentStatus} size="small" /></TableCell>
                       
                     </TableRow>
                   );
@@ -263,7 +279,7 @@ export default function Payments() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={payments.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

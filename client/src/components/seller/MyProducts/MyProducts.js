@@ -140,13 +140,13 @@ export default function MyProduct(props) {
     if(searchedText.length !== 0){
       await axios.get(`http://localhost:3308/allproducts/sort/${sellerId}/${searchBy}/${searchedText}/${id}/${order}`).then((res) => {
         setProducts(res.data);
-        console.log("data1", res);
+        // console.log("data1", res);
       });
     }
     else{
       await axios.get(`http://localhost:3308/allproducts/sort/${sellerId}/${id}/${order}`).then((res) => {
         setProducts(res.data);
-        console.log("data2", res);
+        // console.log("data2", res);
       });
     }
   };

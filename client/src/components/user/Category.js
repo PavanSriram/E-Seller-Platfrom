@@ -8,13 +8,14 @@ import axios from "axios";
 import { useEffect } from "react";
 
 function Category(props) {
-  const [products, setProducts] = useState([1, 2, 3, 4]);
+  let key = 0;
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       await axios.get(`http://localhost:3308/${props.category}`).then((res) => {
         setProducts(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       });
     }
     fetchData();
@@ -25,7 +26,7 @@ function Category(props) {
       
       <Grid container spacing={3}>
         {products.map((item) => (
-          <ItemCard child={item} />
+          <ItemCard key={key++} child={item} />
         ))}
       </Grid>
     </Container>

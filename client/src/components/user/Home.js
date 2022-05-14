@@ -67,7 +67,7 @@ function Home(props) {
         <Category category="electronics" />
         {/* <Category category="sports" /> */}
       </Container>
-        {props.user}
+        {/* {props.user} */}
       {/* <Category category="electronics"/>
       <Category category="sports"/> */}
 

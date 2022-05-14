@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import { Grid } from "@mui/material";
 import Card from '@mui/material/Card';
@@ -7,17 +8,42 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import axios from "axios";
 
 function ItemCard(props) {
+
+  const [image, setImage] = useState('');
+
+  useEffect(() => {
+    // console.log(props.child.productName);
+    // let request = { productName: props.child.productName, brand: props.child.brand, sellerId: props.child.sellerId };
+    // console.log(request);
+  //   // console.log("Hello");
+    async function fetchData() {
+      await axios
+        .get(`http://localhost:3308/getimage/${props.child.sellerId}/${props.child.brand}/${props.child.productName}`)
+        .then((res) => {
+          console.log(image);
+          console.log(res.data);
+          setImage(res.data.image);
+          console.log(image);
+        });
+    }
+    fetchData();
+  }, [props]);
+
   return (
     <Grid item xs={12} md={4} lg={3} spacing={3}>
       <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
+      
+      <img src={`${image}`} />
+
+      {/* <CardMedia
         component="img"
         alt="green iguana"
         height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
-      />
+        image={URL.createObjectURL(`data:image/jpeg;base64,${image}`)}
+      /> */}
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {props.child.productName}

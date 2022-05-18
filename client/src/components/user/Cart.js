@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import ItemCard from "./ItemCard";
+import CardItem from "./CartItem";
 import { Paper, Container, Fab, Box } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import { useNavigate } from "react-router";
@@ -13,20 +13,22 @@ const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
+  async function fetchData() {
+    await axios
+      .get(`http://localhost:3308/usercart/${userId}`)
+      .then((res) => {
+        console.log("Hello");
+        // setCartItems(res.data);
+        console.log("data", res.data.cart);
+        setCartItems(res.data.cart);
+      });
+  }
+
   useEffect(() => {
     let request = { userId };
     console.log(request);
     console.log("Hello");
-    async function fetchData() {
-      await axios
-        .get(`http://localhost:3308/usercart/${userId}`)
-        .then((res) => {
-          console.log("Hello");
-          // setCartItems(res.data);
-          console.log("data", res.data.cart);
-          setCartItems(res.data.cart);
-        });
-    }
+    
     fetchData();
   }, [userId]);
 
@@ -35,7 +37,7 @@ const Cart = () => {
       <Grid container spacing={3}>
         {cartItems.map((item) => (
           <Grid item xs={15}>
-            <ItemCard child={item} />
+            <CardItem child={item} user={userId} fetchCartData = {fetchData} />
           </Grid>
         )
         )}

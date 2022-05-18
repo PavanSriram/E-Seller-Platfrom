@@ -26,7 +26,7 @@ function Category(props) {
       
       <Grid container spacing={3}>
         {products.map((item) => (
-          <ItemCard key={key++} child={item} />
+          <ItemCard key={key++} child={item} user={props.user}/>
         ))}
       </Grid>
     </Container>

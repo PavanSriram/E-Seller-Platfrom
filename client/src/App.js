@@ -15,6 +15,7 @@ import Electronics from "./components/user/categories/Electronics";
 import Sports from "./components/user/categories/Sports";
 import UserSignIn from "./components/user/UserSignIn";
 import UserRegister from "./components/user/UserRegister";
+import ProductPage from "./components/user/ProductPage"
 
 import SellerDashboard from "./components/seller/Dashboard";
 import MyProduct from "./components/seller/MyProducts/MyProducts";
@@ -35,8 +36,8 @@ import EditDiscount from "./components/seller/Discounts/editDiscount";
 
 function App() {
 
-  const [user, setUser] = React.useState(0);
-  const [seller, setSeller] = React.useState(0);
+  const [user, setUser] = React.useState(localStorage.getItem("userId"));
+  const [seller, setSeller] = React.useState(localStorage.getItem("sellerId"));
   const [productInfo, setProductInfo] = React.useState();
 
   return (
@@ -47,6 +48,7 @@ function App() {
         {/* <Route path='/user/category' element={<UserDashboard child={<Category />}/>} /> */}
         <Route path='/user/orders' element={<UserDashboard child={<UserOrders user={user}/>}/>} />
         <Route path='/user/cart' element={<UserDashboard child={<UserCart user={user}/>}/>} />
+        <Route path='/user/product' element={<UserDashboard child={<ProductPage/>}/>} />
         <Route path='/user/checkout' element={<Checkout user={user}/>} />
         <Route path='/user/profile' element={<UserDashboard child={<UserProfile user={user}/>}/>} />
         <Route path='/user/edituserprofile' element={<UserDashboard child={<EditUserProfile user={user}/>}/>} />

@@ -692,18 +692,33 @@ async function main() {
           });
       });
 
-      app.put("/updateusercart/:id", (req, res) => {
+      app.put("/addToCart/:id", (req, res) => {
         const result = db
           .collection("cart")
           .updateOne(
             {
-              _id: req.params.id,
+              userId: parseInt(req.params.id),
             },
-            { $set: { cart: [1, 3, 5, 2] } }
+            { $push: { cart: req.body } }
           )
           .then(function (result) {
             res.json(result);
-            console.log("inserted Id", result.insertedId);
+            console.log("updated Id ", result);
+          });
+      });
+
+      app.put("/removeFromCart/:id", (req, res) => {
+        const result = db
+          .collection("cart")
+          .updateOne(
+            {
+              userId: parseInt(req.params.id),
+            },
+            { $pull: { cart: req.body } }
+          )
+          .then(function (result) {
+            res.json(result);
+            console.log("updated Id ", result);
           });
       });
 

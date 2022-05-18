@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function ItemCard(props) {
+function CartItem(props) {
 
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ function ItemCard(props) {
     fetchData();
   }, [props]);
 
-  const handleAddToCart = async () => {
+  const handleRemove = async () => {
     let request = {
       sellerId: props.child.sellerId,
       productName: props.child.productName,
@@ -44,14 +44,12 @@ function ItemCard(props) {
       discountId: props.child.discountId,
     };
 
-    await axios.put(`http://localhost:3308/addToCart/${props.user}`, request).then((res) => {
-      console.log("HELLLO!!!");
+    await axios.put(`http://localhost:3308/removeFromCart/${props.user}`, request).then((res) => {
+    //   console.log("HELLLO!!!");
+    
+        props.fetchCartData();
       console.log(res);
     });
-  }
-
-  const toProductPage = () => {
-    navigate("/user/product", {state: { item: props, image: image }});
   }
 
   return (
@@ -77,12 +75,12 @@ function ItemCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => {toProductPage()}}>More</Button>
-        <Button size="small" onClick={handleAddToCart}>Add to Cart</Button>
+        <Button size="small" >More</Button>
+        <Button size="small" onClick={handleRemove}>Remove</Button>
       </CardActions>
     </Card>
     </Grid>
   );
 }
 
-export default ItemCard;
+export default CartItem;

@@ -28,9 +28,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Link } from "@mui/material";
+// import { Link } from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert'; 
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
 
 import SearchBy from "../searchBy";
 
@@ -54,83 +57,18 @@ const Search = createSvgIcon(
   "Search"
 );
 
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData("012", "15-12-2021", 12, 67, 4.3),
-  createData("062", "10-04-2021", 6, 51, 4.9),
-  createData("025", "08-12-2021", 16.0, 24, 6.0),
-  createData("021", "05-11-2021", 6.0, 24, 4.0),
-  createData("009", "19-06-2021", 16.0, 49, 3.9),
-  createData("012", "14-07-2021", 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
-];
-
-const DiscountsToolbar = (props) => {
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
-      <Box sx={{ mt: 5, mb: 3 }}>
-        {/* <Card>
-          <CardContent> */}
-        <Stack direction={"row"}>
-          <Box sx={{ maxWidth: 800, minWidth: 400 }}>
-            <TextField
-              fullWidth
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
-                      <Search />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder={props.searchBy}
-              variant="standard"
-            />
-          </Box>
-          <Box sx={{ ml: 2 }}>
-            <SearchBy
-              searchBy={props.searchBy}
-              handleSearchBy={props.handleSearchBy}
-              searchList={props.searchList}
-            />
-          </Box>
-        </Stack>
-        {/* </CardContent>
-        </Card> */}
-      </Box>
-    </Toolbar>
-  );
-};
 
 export default function Discounts() {
   const navigate = useNavigate();
+  const [sellerId, setUserId] = React.useState(localStorage.getItem("sellerId"));
 
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchBy, setSearchBy] = React.useState("Discount Id");
+  const [searchBy, setSearchBy] = React.useState("discountId");
+  const [searchText, setSearchText] = React.useState();
+  const [searchedText, setSearchedText] = React.useState('');
+  const [deleteDiscount, setDeleteDiscount] = React.useState();
   const [headCells, setHeadCells] = React.useState([
     {
       id: "discountId",
@@ -148,22 +86,51 @@ export default function Discounts() {
       order: "asc",
     },
   ]);
+  const [discounts, setDiscounts] = React.useState([{
+    sellerId: sellerId,
+    discountId: "",
+    expiryDate: "",
+    percent: ""}]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await axios.get(`http://localhost:3308/discounts/'${sellerId}'`).then((res) => {
+        setDiscounts(res.data);
+      });
+    }
+    fetchData();
+  }, []);
 
   const handleSearchBy = (searchby) => {
     if (searchby) setSearchBy(searchby);
   };
 
-  const handleSortClick = (id) => {
+  const handleSortClick = async (id) => {
+    let order = "asc";
     let cells = headCells.map((cell) => {
       if (cell.id === id) {
-        if (cell.order === "asc") cell.order = "desc";
+        if (cell.order === "asc") {cell.order = "desc"; order='desc'}
         else cell.order = "asc";
       }
       return cell;
     });
-    // console.log(cells);
+    
     setHeadCells(cells);
+
+    if(searchedText.length !== 0){
+      await axios.get(`http://localhost:3308/discounts/sort/${sellerId}/${searchBy}/${searchedText}/${id}/${order}`).then((res) => {
+        setDiscounts(res.data);
+        // console.log("data1", res);
+      });
+    }
+    else{
+      await axios.get(`http://localhost:3308/discounts/sort/${sellerId}/${id}/${order}`).then((res) => {
+        setDiscounts(res.data);
+        // console.log("data2", res);
+      });
+    }
   };
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -191,7 +158,31 @@ export default function Discounts() {
     setSnackOpen(true);
   };
 
-  const handleDeleteButton = () => {
+  const handleDeleteDiscount = async () => {
+    // remove product from cart when a product is deleted
+    console.log("dr", deleteDiscount);
+    let flag = false;
+    if(deleteDiscount){
+      await axios
+        .delete(`http://localhost:3308/seller/deleteDiscount/${deleteDiscount.discountId}`)
+        .then((res) => {
+          if (res.data.length !== 0) {
+            setdeleteOpen(false);
+            flag = true;
+          }
+        });
+    }    
+    if(flag){
+      await axios.get(`http://localhost:3308/discounts/'${sellerId}'`).then((res) => {
+        setDiscounts(res.data);
+      });
+    }
+    
+  };
+
+  const handleDeleteButton = (discount) => {
+    // console.log("hr", discount);
+    setDeleteDiscount(discount);
     setdeleteOpen(true);
   };
 
@@ -206,14 +197,78 @@ export default function Discounts() {
     setSnackOpen(false);
   };
 
+  const handleSearchText = (event) =>{
+    setSearchText(event.target.value);
+  }
+  const handleSearch = async (event) =>{
+    console.log("text", searchText.length);
+    setSearchedText(searchText);
+    if(searchText.length !== 0){
+      await axios.get(`http://localhost:3308/discounts/search/${sellerId}/${searchBy}/${searchText}`).then((res) => {
+        setDiscounts(res.data);
+        // console.log("data1", res);
+      });
+    }
+    else{
+      await axios.get(`http://localhost:3308/discounts/'${sellerId}'`).then((res) => {
+        setDiscounts(res.data);
+        // console.log("data2", res);
+      });
+    }
+    
+  }
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - discounts.length) : 0;
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <DiscountsToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/>
+        {/* <DiscountsToolbar searchBy={searchBy} handleSearchBy={handleSearchBy} searchList={headCells}/> */}
+        <Toolbar
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 },
+          }}
+        >
+          <Box sx={{ mt: 5, mb: 3 }}>
+            {/* <Card>
+              <CardContent> */}
+            <Stack direction={"row"}>
+              <Box sx={{ maxWidth: 800, minWidth: 400 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  className="searchBar"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button color="primary" onClick={handleSearch}>
+                          <SvgIcon fontSize="small" color="action">
+                            <Search />
+                          </SvgIcon>
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={handleSearchText}
+                  placeholder={searchBy}
+                  variant="standard"
+                />
+              </Box>
+              <Box sx={{ ml: 2 }}>
+                <SearchBy
+                  searchBy={searchBy}
+                  handleSearchBy={handleSearchBy}
+                  searchList={headCells}
+                />
+              </Box>
+            </Stack>
+            {/* </CardContent>
+            </Card> */}
+          </Box>
+        </Toolbar>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -248,13 +303,13 @@ export default function Discounts() {
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {rows
+              {discounts
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((discount, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow role="checkbox" tabIndex={-1} key={row.name}>
+                    <TableRow role="checkbox" tabIndex={-1} key={discount.discountId}>
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell
                         component="th"
@@ -262,27 +317,20 @@ export default function Discounts() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {discount.discountId}
                       </TableCell>
                       
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
+                      <TableCell align="right">{discount.expiryDate}</TableCell>
+                      <TableCell align="right">{discount.percent}</TableCell>
                       {/* <TableCell align="right">{row.carbs}</TableCell>
                       <TableCell align="right">{row.protein}</TableCell> */}
                       <TableCell align="right">
+                        <Link to="/seller/editdiscount" style={{color: "gray"}} state={{discount: discount}}><EditIcon /></Link>
                         <IconButton
                           edge="end"
                           aria-label="delete"
                           size="small"
-                          onClick={handleEditButton}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          size="small"
-                          onClick={handleDeleteButton}
+                          onClick={() => handleDeleteButton(discount)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -305,7 +353,7 @@ export default function Discounts() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={discounts.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -344,7 +392,7 @@ export default function Discounts() {
           </DialogContent>
           <DialogActions> 
             <Button onClick={handleDeleteClose}>NO</Button>
-            <Button onClick={handleDeleteClose} autoFocus>
+            <Button onClick={handleDeleteDiscount} autoFocus>
               YES
             </Button>
           </DialogActions>

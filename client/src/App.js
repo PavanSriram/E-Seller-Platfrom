@@ -31,6 +31,7 @@ import SellerProfile from "./components/seller/Profile/SellerProfile";
 import EditSellerProfile from "./components/seller/Profile/EditSellerProfile";
 import SignIn from "./components/seller/Entry/SignIn";
 import EditProduct from "./components/seller/MyProducts/editProduct";
+import EditDiscount from "./components/seller/Discounts/editDiscount";
 
 function App() {
 
@@ -66,7 +67,7 @@ function App() {
         <Route exact path='/seller/payments' element={<SellerDashboard header="Payments" child={<Payments sellerId={seller}/>}/>} />
         <Route exact path='/seller/discounts' element={<SellerDashboard header="Discounts" child={<Discounts sellerId={seller}/>}/>} />
         <Route exact path='/seller/adddiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
-        <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<AddDiscount sellerId={seller}/>}/>} />
+        <Route exact path='/seller/editdiscount' element={<SellerDashboard header="Discounts" child={<EditDiscount sellerId={seller}/>}/>} />
         <Route exact path='/seller/register' element={<Register setSeller={setSeller}/>} />
         <Route exact path='/seller/signin' element={<SignIn setSeller={setSeller}  />} />
         <Route exact path='/seller/profile' element={<SellerDashboard header="Profile" child={<SellerProfile sellerId={seller}/>}/>} />

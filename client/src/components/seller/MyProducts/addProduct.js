@@ -17,7 +17,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 
 export default function AddProduct(props) {
-
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertOpenError, setAlertOpenError] = React.useState(false);
   const categories = ["A", "B", "C", "D", "E"];

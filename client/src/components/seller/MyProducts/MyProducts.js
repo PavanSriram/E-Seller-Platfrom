@@ -33,7 +33,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 
-
 import SearchBy from "../searchBy";
 
 const Search = createSvgIcon(
@@ -129,14 +128,9 @@ export default function MyProduct(props) {
       }
       return cell;
     });
-    // console.log(cells);
+    
     setHeadCells(cells);
-    // await axios.get(`http://localhost:3308/allproducts/sort/${sellerId}/${searchBy}/${searchText}/${id}`).then((res) => {
-    //     setProducts(res.data);
-    //     // console.log("data", res);
-    //   });
 
-    console.log("text", searchedText.length);
     if(searchedText.length !== 0){
       await axios.get(`http://localhost:3308/allproducts/sort/${sellerId}/${searchBy}/${searchedText}/${id}/${order}`).then((res) => {
         setProducts(res.data);
@@ -334,7 +328,7 @@ export default function MyProduct(props) {
                       <TableCell align="right">{product.price}</TableCell>
                       <TableCell align="right">{product.quantity}</TableCell>
                       <TableCell align="right">
-                      <Link to="/seller/editproduct" style={{color: "gray"}} state={{product: product}}><EditIcon /></Link>
+                        <Link to="/seller/editproduct" style={{color: "gray"}} state={{product: product}}><EditIcon /></Link>
                           
                         <IconButton
                           edge="end"

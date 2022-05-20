@@ -15,8 +15,10 @@ import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { useLocation } from "react-router";
 
 export default function AddDiscount(props) {
+  let location = useLocation();
   const [sellerId, setUserId] = React.useState(localStorage.getItem("sellerId"));
 
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -27,10 +29,7 @@ export default function AddDiscount(props) {
     percent: "",
   };
 
-  if (!props) {
-    defaultValues = [...props];
-  }
-  const [values, setValues] = React.useState(defaultValues);
+  const [values, setValues] = React.useState(location.state.discount);
   const [errors, setErrors] = React.useState({
     discountId: "",
     expiryDate: "",
@@ -64,18 +63,18 @@ export default function AddDiscount(props) {
 
     setErrors(newErrors);
     if(flag === true){
-      values.numberOfOrders = 0;
-      await axios.post(`http://localhost:3308/seller/addDiscount/${sellerId}`, values).then((res) => {
-        console.log("hi", res);
-        if (res.data.length !== 0) {
-          setValues(defaultValues);
-          setAlertOpen(true);
-        } else {
-          setAlertOpenError(true);
-        }
-      });
-      
-    }
+        values.numberOfOrders = 0;
+        await axios.post(`http://localhost:3308/seller/editdiscount/${location.state.discount.discountId}`, values).then((res) => {
+          console.log("hi", res);
+          if (res.data.length !== 0) {
+            setValues(defaultValues);
+            setAlertOpen(true);
+          } else {
+            setAlertOpenError(true);
+          }
+        });
+        
+      }
   };
 
   return (
@@ -98,7 +97,7 @@ export default function AddDiscount(props) {
           severity="success"
           color="info"
         >
-          New Discount Added Successfully...
+          Discount Edited Successfully...
         </Alert>
       </Collapse>
       

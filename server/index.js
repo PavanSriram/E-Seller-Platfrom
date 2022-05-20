@@ -68,6 +68,28 @@ app.get("/allproducts/:sellerId", (req, res) => {
   });
 });
 
+app.get("/sellerprofile/:sellerId", (req, res) => {
+  const sql = `SELECT * FROM sellers WHERE sellerId = ${req.params.sellerId}`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/discounts/:sellerId", (req, res) => {
+  const sql = `SELECT * FROM Discounts WHERE sellerId = ${req.params.sellerId}`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
 app.get("/orders/:sellerId", (req, res) => {
   const sql = `SELECT * FROM Orders WHERE sellerId = ${req.params.sellerId}`;
   connection.query(sql, (err, result) => {
@@ -102,6 +124,23 @@ app.get("/allproducts/search/:sellerId/:searchBy/:text", (req, res) => {
     sql = `SELECT * FROM Products WHERE sellerId = "${req.params.sellerId}" and ((productName LIKE "%${req.params.text}%") or (category LIKE "%${req.params.text}%") or (brand LIKE "%${req.params.text}%") or (price LIKE "%${req.params.text}%") or (quantity LIKE "%${req.params.text}%"))`;
   else
     sql = `SELECT * FROM Products WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")`;
+    
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/discounts/search/:sellerId/:searchBy/:text", (req, res) => {
+  let sql;
+  if(req.params.searchBy === "All")
+    sql = `SELECT * FROM Discounts WHERE sellerId = "${req.params.sellerId}" and ((discountId LIKE "%${req.params.text}%") or (expiryDate LIKE "%${req.params.text}%") or (percent LIKE "%${req.params.text}%"))`;
+  else
+    sql = `SELECT * FROM Discounts WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")`;
     
   console.log("SQL", sql);
   connection.query(sql, (err, result) => {
@@ -240,6 +279,58 @@ app.get("/allproducts/sort/:sellerId/:id/:order", (req, res) => {
     res.send(result);
   });
 });   
+
+app.get("/discounts/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
+  let sql;
+  if(req.params.searchBy !== "All")
+    sql = `SELECT * 
+            FROM (
+                    SELECT * 
+                    FROM Discounts 
+                    WHERE sellerId = "${req.params.sellerId}" and (${req.params.searchBy} LIKE "%${req.params.text}%")
+                  ) as T 
+            ORDER BY T.${req.params.id} ${req.params.order}`;
+  else
+    sql = `SELECT * 
+            FROM (
+              SELECT *
+              FROM Discounts 
+              WHERE sellerId = "${req.params.sellerId}" and 
+              (
+                (discountId LIKE "%${req.params.text}%") or 
+                (expiryDate LIKE "%${req.params.text}%") or 
+                (percent LIKE "%${req.params.text}%")
+              )
+            ) as T 
+            ORDER BY T.${req.params.id} ${req.params.order}`;
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  }); 
+});
+
+app.get("/discounts/sort/:sellerId/:id/:order", (req, res) => {
+  let sql = `SELECT * 
+              FROM (
+                      SELECT * 
+                      FROM Discounts 
+                      WHERE sellerId = "${req.params.sellerId}"
+                    ) as T 
+              ORDER BY T.${req.params.id} ${req.params.order}`;
+  
+  console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("res-", result);
+    res.send(result);
+  });
+});
 
 app.get("/payments/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
   let sql;
@@ -473,8 +564,44 @@ app.post("/seller/editproduct/:sellerId/:productName/:brand", (req, res) => {
   });
 });
 
+app.post("/seller/editprofile/:sellerId", (req, res) => {
+  console.log("req.body = ", req.params);
+  const sql = `UPDATE sellers SET firstName = "${req.body.firstName}", lastName = "${req.body.lastName}", email = "${req.body.email}", address = "${req.body.address}", phoneNumber = "${req.body.phoneNumber}", companyName = "${req.body.companyName}" WHERE (sellerId = "${req.params.sellerId}")`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error : ", err);
+    }
+    console.log("res", result);
+    res.send(result);
+  });
+});
+
+app.post("/seller/editdiscount/:discountId", (req, res) => {
+  console.log("req.body = ", req.params);
+  const sql = `UPDATE Discounts SET expiryDate = "${req.body.expiryDate}", percent = "${req.body.percent}" WHERE discountId = "${req.params.discountId}"`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error : ", err);
+    }
+    console.log("res", result);
+    res.send(result);
+  });
+});
+
 app.post("/seller/addproduct", (req, res) => {
   const sql = `INSERT INTO Products (sellerId, productName, brand, title, description, price, quantity, discountId, dimensions, category, subCategory, numberOfOrders) VALUES ("${req.body.sellerId}", "${req.body.productName}", "${req.body.brand}", "${req.body.title}", "${req.body.description}", "${req.body.price}", "${req.body.quantity}", "${req.body.discountId}", "${req.body.dimensions}", "${req.body.category}", "${req.body.subCategory}", "${req.body.numberOfOrders}")`;
+
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error : ", err);
+    }
+    console.log("res", result);
+    res.send(result);
+  });
+});
+
+app.post("/seller/addDiscount/:sellerId", (req, res) => {
+  const sql = `INSERT INTO Discounts (expiryDate, percent, sellerId) VALUES ("${req.body.expiryDate}", "${req.body.percent}", "${req.params.sellerId}")`;
 
   connection.query(sql, (err, result) => {
     if (err) {
@@ -489,6 +616,20 @@ app.delete(
   "/seller/deleteProduct/:sellerId/:productName/:brand",
   (req, res) => {
     const sql = `DELETE FROM Products WHERE sellerId = "${req.params.sellerId}" and productName = "${req.params.productName}" and brand = "${req.params.brand}"`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        console.log("Error : ", err);
+      }
+      console.log("Delete", result);
+      res.send(result);
+    });
+  }
+);
+
+app.delete(
+  "/seller/deleteDiscount/:discountId",
+  (req, res) => {
+    const sql = `DELETE FROM Discounts WHERE discountId = "${req.params.discountId}"`;
     connection.query(sql, (err, result) => {
       if (err) {
         console.log("Error : ", err);

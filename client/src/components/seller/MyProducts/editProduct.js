@@ -112,7 +112,7 @@ export default function EditProduct(props) {
     setErrors(newErrors);
     if(flag === true){
       values.numberOfOrders = 0;
-      await axios.post(`http://localhost:3308/seller/editproduct/${location.state.product.sellerId}/${location.state.product.productName}/${location.state.product.brand}`, values).then((res) => {
+      await axios.post(`http://localhost:3308/seller/editproduct/${location.state.product.pid}`, values).then((res) => {
         console.log("hi", res);
         if (res.data.length !== 0) {
           setValues(defaultValues);

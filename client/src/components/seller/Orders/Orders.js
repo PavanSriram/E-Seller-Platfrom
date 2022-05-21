@@ -76,13 +76,8 @@ export default function Orders() {
       order: "asc",
     },
     {
-      id: "productName",
-      label: "Product Name",
-      order: "asc",
-    },
-    {
-      id: "brand",
-      label: "Brand",
+      id: "pid",
+      label: "pid",
       order: "asc",
     },
     {
@@ -142,7 +137,7 @@ export default function Orders() {
     let flag = false;
     if(deleteOrder){
       await axios
-        .delete(`http://localhost:3308/seller/deleteOrder/${deleteOrder.sellerId}/${deleteOrder.productName}/${deleteOrder.brand}`)
+        .delete(`http://localhost:3308/seller/deleteOrder/${deleteOrder.orderId}`)
         .then((res) => {
           if (res.data.length !== 0) {
             setdeleteOpen(false);
@@ -346,8 +341,7 @@ export default function Orders() {
                         {/* <Link href="/seller/order" underline="none">{order.orderId}</Link> */}
                         <Link to="/seller/order/" state={{order: order}} style={{ textDecoration: 'none' }}>{order.orderId}</Link>
                       </TableCell>
-                      <TableCell align="right">{order.productName}</TableCell>
-                      <TableCell align="right">{order.brand}</TableCell>
+                      <TableCell align="right">{order.pid}</TableCell>
                       <TableCell align="right">{order.quantity}</TableCell>
                       {/*can seller change the status of a order*/}
                       <TableCell align="right"><Chip variant="outlined" color="info" label={order.status} size="small" /></TableCell>

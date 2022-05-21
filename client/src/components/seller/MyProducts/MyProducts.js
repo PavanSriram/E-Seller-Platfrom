@@ -70,6 +70,11 @@ export default function MyProduct(props) {
       order: "asc",
     },
     {
+      id: "pid",
+      label: "pid",
+      order: "asc",
+    },
+    {
       id: "brand",
       label: "Brand",
       order: "asc",
@@ -92,6 +97,7 @@ export default function MyProduct(props) {
   ]);
 
   const [products, setProducts] = React.useState([{
+    pid: "",
     sellerId: sellerId,
     productName: "",
     brand: "",
@@ -176,7 +182,7 @@ export default function MyProduct(props) {
     let flag = false;
     if(deleteProduct){
       await axios
-        .delete(`http://localhost:3308/seller/deleteProduct/${deleteProduct.sellerId}/${deleteProduct.productName}/${deleteProduct.brand}`)
+        .delete(`http://localhost:3308/seller/deleteProduct/${deleteProduct.pid}`)
         .then((res) => {
           if (res.data.length !== 0) {
             setdeleteOpen(false);
@@ -323,6 +329,7 @@ export default function MyProduct(props) {
                         <Link to="/seller/product/" state={{product: product}} style={{ textDecoration: 'none' }}>{product.productName}</Link>
                       </TableCell>
                       
+                      <TableCell align="right">{product.pid}</TableCell>
                       <TableCell align="right">{product.brand}</TableCell>
                       <TableCell align="right">{product.category}</TableCell>
                       <TableCell align="right">{product.price}</TableCell>

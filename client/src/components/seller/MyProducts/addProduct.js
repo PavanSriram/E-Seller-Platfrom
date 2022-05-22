@@ -369,9 +369,12 @@ export default function AddProduct(props) {
             </div>
             <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
               <div className="carousel-inner">
+              <div className="carousel-item active">
+                <img src={buyImage} className="d-block w-100" alt="..."/>
+              </div>
                 {
                   values.images.map((img) => <div className="carousel-item">
-                  <img src={img} className="d-block w-100"/>
+                  <img src={img} className="d-block w-100" alt={buyImage}/>
                 </div>)}
               </div>
               <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">

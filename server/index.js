@@ -5,10 +5,16 @@ const connection = require("./db");
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
+
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
 // db.connect(err => {
 //   if(err) {
@@ -58,10 +64,10 @@ app.get("/sports", (req, res) => {
 // Get all products of a particular seller
 app.get("/allproducts/:sellerId", (req, res) => {
   const sql =  `SELECT * 
-                FROM Products 
+                FROM Products     
                 WHERE sellerId = ${req.params.sellerId}`;
   connection.query(sql, (err, result) => {
-    console.log("res-", result);
+    console.log("err", err, "res", result);
     res.send(result);
   });
 });
@@ -77,6 +83,7 @@ app.get("/allproducts/search/:sellerId/:searchBy/:text", (req, res) => {
                     (productName LIKE "%${req.params.text}%") or 
                     (category LIKE "%${req.params.text}%") or 
                     (brand LIKE "%${req.params.text}%") or 
+                    (pid LIKE "%${req.params.text}%") or 
                     (price LIKE "%${req.params.text}%") or 
                     (quantity LIKE "%${req.params.text}%")
                   )`;
@@ -143,12 +150,8 @@ app.get("/allproducts/sort/:sellerId/:id/:order", (req, res) => {
 }); 
 
 //Edit product
-app.post("/seller/editproduct/:pid", (req, res) => {
-  const sql =  `set transaction isolation level snapshot;
-                set sql_safe_updates = 0;
-                START transaction
-
-                UPDATE Products 
+app.post("/seller/editproduct/:pid", async (req, res) => {
+  const sql =  `UPDATE Products 
                 SET productName = "${req.body.productName}", 
                     brand = "${req.body.brand}", 
                     title = "${req.body.title}", 
@@ -160,18 +163,21 @@ app.post("/seller/editproduct/:pid", (req, res) => {
                     category = "${req.body.category}", 
                     subCategory = "${req.body.subCategory}",
                     numberOfOrders = "${req.body.numberOfOrders}" 
-                WHERE pid = "${req.params.pid}"
-                FOR UPDATE
-                
-                COMMIT`;
+                WHERE pid = "${req.params.pid}"`;
 
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.log("Error : ", err);
-    }
-    console.log("res", result);
-    res.send(result);
-  });
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
+
 });
 
 // Adding a prduct to products table
@@ -208,33 +214,29 @@ app.post("/seller/addproduct", (req, res) => {
                   )`;
 
   connection.query(sql, (err, result) => {
-    if (err) {
-      console.log("Error : ", err);
-    }
     console.log("res", result);
     res.send(result);
   });
 });
 
 // Delete Product
-app.delete("/seller/deleteProduct/:pid", (req, res) => {
-  const sql =  `set transaction isolation level snapshot;
-                set sql_safe_updates = 0;
-                START transaction
-
-                DELETE 
+app.delete("/seller/deleteProduct/:pid", async (req, res) => {
+  const sql =  `DELETE 
                 FROM Products 
-                WHERE pid = "${req.params.pid}"
-                FOR UPDATE
-                
-                COMMIT`;
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.log("Error : ", err);
-    }
-    console.log("Delete", result);
-    res.send(result);
-  });
+                WHERE pid = "${req.params.pid}"`;
+
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
 }
 );
 
@@ -251,6 +253,30 @@ app.get("/orders/:sellerId", (req, res) => {
   });
 });
 
+app.post("/seller/editorder/:orderId", async (req, res) => {
+  console.log(req.body);
+  
+  const sql =  `UPDATE Orders  
+                SET status = "${req.body.status}", 
+                    deliveryDate = "${req.body.deliveryDate}", 
+                    actualDeliveryDate = "${req.body.actualDeliveryDate}" 
+                WHERE orderId = "${req.params.orderId}"`;
+
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
+  
+});
+
 app.get("/orders/search/:sellerId/:searchBy/:text", (req, res) => {
   let sql;
   if(req.params.searchBy === "All")
@@ -258,9 +284,8 @@ app.get("/orders/search/:sellerId/:searchBy/:text", (req, res) => {
             FROM Orders 
             WHERE sellerId = "${req.params.sellerId}" and 
                   (
-                    (productName LIKE "%${req.params.text}%") or 
                     (orderId LIKE "%${req.params.text}%") or 
-                    (brand LIKE "%${req.params.text}%") or 
+                    (pid LIKE "%${req.params.text}%") or 
                     (quantity LIKE "%${req.params.text}%") or 
                     (status LIKE "%${req.params.text}%") or 
                     (paymentId LIKE "%${req.params.text}%") or 
@@ -334,24 +359,23 @@ app.get("/orders/sort/:sellerId/:id/:order", (req, res) => {
   });
 });
 
-app.delete( "/seller/deleteOrder/:orderId", (req, res) => {
-  const sql =  `set transaction isolation level snapshot;
-                set sql_safe_updates = 0;
-                START transaction
-
-                DELETE 
+app.delete( "/seller/deleteOrder/:orderId", async (req, res) => {
+  const sql =  `DELETE 
                 FROM Orders 
-                WHERE orderId = "${req.params.orderId}"
-                FOR UPDATE
-            
-                COMMIT`;
-  connection.query(sql, (err, result) => {8
-    if (err) {
-      console.log("Error : ", err);
-    }
-    console.log("Delete", result);
-    res.send(result);
-  });
+                WHERE orderId = "${req.params.orderId}"`;
+
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
 }
 );
 
@@ -366,7 +390,7 @@ app.get("/payments/:sellerId", (req, res) => {
                   FROM Orders 
                   WHERE sellerId = ${req.params.sellerId}
                 ) AS T , Payments
-                WHERE T.orderId = Payments.orderId`;
+                WHERE T.paymentId = Payments.paymentId`;
   connection.query(sql, (err, result) => {
     console.log("res-", result);
     res.send(result);
@@ -384,11 +408,10 @@ app.get("/payments/search/:sellerId/:searchBy/:text", (req, res) => {
                             FROM Orders 
                             WHERE sellerId = ${req.params.sellerId}
                           ) AS T1 , Payments
-                    WHERE T1.orderId = Payments.orderId
+                    WHERE T1.paymentId = Payments.paymentId
             ) AS T2
             WHERE (
-                    (T2.paymentId LIKE "%${req.params.text}%") or 
-                    (T2.orderId LIKE "%${req.params.text}%") or 
+                    (T2.paymentId LIKE "%${req.params.text}%") or
                     (T2.amount LIKE "%${req.params.text}%") or 
                     (T2.paymentMode LIKE "%${req.params.text}%") or 
                     (T2.paymentStatus LIKE "%${req.params.text}%")
@@ -402,7 +425,7 @@ app.get("/payments/search/:sellerId/:searchBy/:text", (req, res) => {
                             FROM Orders 
                             WHERE sellerId = ${req.params.sellerId}
                           ) AS T1 , Payments
-                    WHERE T1.orderId = Payments.orderId
+                    WHERE T1.paymentId = Payments.paymentId
             ) AS T2 
             WHERE (${req.params.searchBy} LIKE "%${req.params.text}%")`;
     
@@ -426,7 +449,7 @@ app.get("/payments/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
                                     FROM Orders 
                                     WHERE sellerId = ${req.params.sellerId}
                             ) AS T1 , Payments
-                            WHERE T1.orderId = Payments.orderId
+                            WHERE T1.paymentId = Payments.paymentId
                     ) AS T2
                     WHERE (${req.params.searchBy} LIKE "%${req.params.text}%")
             ) as T 
@@ -442,11 +465,10 @@ app.get("/payments/sort/:sellerId/:searchBy/:text/:id/:order", (req, res) => {
                                     FROM Orders 
                                     WHERE sellerId = ${req.params.sellerId}
                                   ) AS T1 , Payments
-                            WHERE T1.orderId = Payments.orderId
+                            WHERE T1.paymentId = Payments.paymentId
                     ) AS T2
                     WHERE (
                             (T2.paymentId LIKE "%${req.params.text}%") or 
-                            (T2.orderId LIKE "%${req.params.text}%") or 
                             (T2.amount LIKE "%${req.params.text}%") or 
                             (T2.paymentMode LIKE "%${req.params.text}%") or 
                             (T2.paymentStatus LIKE "%${req.params.text}%")
@@ -470,7 +492,7 @@ app.get("/payments/sort/:sellerId/:id/:order", (req, res) => {
                         FROM Orders 
                         WHERE sellerId = ${req.params.sellerId}
                       ) AS T1 , Payments
-                WHERE T1.orderId = Payments.orderId
+                WHERE T1.paymentId = Payments.paymentId
               ) as T 
               ORDER BY T.${req.params.id} ${req.params.order}`;
   
@@ -565,27 +587,25 @@ app.get("/discounts/sort/:sellerId/:id/:order", (req, res) => {
   });
 });
 
-app.post("/seller/editdiscount/:discountId", (req, res) => {
+app.post("/seller/editdiscount/:discountId", async (req, res) => {
 
-  const sql =  `set transaction isolation level snapshot;
-                set sql_safe_updates = 0;
-                START transaction
-
-                UPDATE Discounts 
+  const sql =  `UPDATE Discounts 
                 SET expiryDate = "${req.body.expiryDate}", 
                     percent = "${req.body.percent}" 
-                WHERE discountId = "${req.params.discountId}"
-                FOR UPDATE
-                
-                COMMIT`;
-                
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.log("Error : ", err);
-    }
-    console.log("res", result);
-    res.send(result);
-  });
+                WHERE discountId = "${req.params.discountId}"`;
+
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
 });
 
 app.post("/seller/addDiscount/:sellerId", (req, res) => {
@@ -612,25 +632,23 @@ app.post("/seller/addDiscount/:sellerId", (req, res) => {
   });
 });
 
-app.delete("/seller/deleteDiscount/:discountId", (req, res) => {
-    const sql =  `set transaction isolation level snapshot;
-                  set sql_safe_updates = 0;
-                  START transaction
-                  
-                  DELETE 
+app.delete("/seller/deleteDiscount/:discountId", async (req, res) => {
+    const sql =  `DELETE 
                   FROM Discounts 
-                  WHERE discountId = "${req.params.discountId}"
-                  FOR UPDATE
-                  
-                  COMMIT`;
+                  WHERE discountId = "${req.params.discountId}"`;
 
-    connection.query(sql, (err, result) => {
-      if (err) {
-        console.log("Error : ", err);
-      }
-      console.log("Delete", result);
-      res.send(result);
-    });
+    try {
+      await connection.beginTransaction();
+      
+      connection.query(sql, (err, result) => {
+        console.log("err", err, "res", result);
+        res.send(result);
+      });
+      await connection.commit();
+    }
+    catch (err) {
+      await connection.rollback()
+    }
   }
 );
 
@@ -648,29 +666,28 @@ app.get("/sellerprofile/:sellerId", (req, res) => {
   });
 });
 
-app.post("/seller/editprofile/:sellerId", (req, res) => {
-  const sql =  `set transaction isolation level snapshot;
-                set sql_safe_updates = 0;
-                START transaction
-
-                UPDATE sellers 
+app.post("/seller/editprofile/:sellerId", async (req, res) => {
+  const sql =  `UPDATE sellers 
                 SET firstName = "${req.body.firstName}", 
                     lastName = "${req.body.lastName}", 
                     email = "${req.body.email}", 
                     address = "${req.body.address}", 
                     phoneNumber = "${req.body.phoneNumber}", 
                     companyName = "${req.body.companyName}" 
-                WHERE (sellerId = "${req.params.sellerId}")
-                FOR UPDATE
-                
-                COMMIT`;
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.log("Error : ", err);
-    }
-    console.log("res", result);
-    res.send(result);
-  });
+                WHERE (sellerId = "${req.params.sellerId}")`;
+
+  try {
+    await connection.beginTransaction();
+    
+    connection.query(sql, (err, result) => {
+      console.log("err", err, "res", result);
+      res.send(result);
+    });
+    await connection.commit();
+  }
+  catch (err) {
+    await connection.rollback()
+  }
 });
 
 
@@ -826,8 +843,7 @@ app.post("/user/update", (req, res) => {
 const { MongoClient } = require("mongodb");
 let client;
 async function main() {
-  const uri =
-    "mongodb+srv://e-seller-platform:seller-e-platform@cluster0.78fzo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  const uri = "mongodb+srv://e-seller-platform:seller-e-platform@cluster0.78fzo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
   client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -854,6 +870,21 @@ async function main() {
           .insertOne({
             _id: req.params.id,
             cart: [],
+          })
+          .then(function (result) {
+            res.json(result);
+            console.log("inserted Id", result.insertedId);
+          });
+      });
+
+      app.post("/addimage", (req, res) => {
+        const result = db
+          .collection("images")
+          .insertOne({
+            sellerId: req.body.sellerId,
+            brand: req.body.brand,
+            productName: req.body.productName,
+            images: req.body.images,
           })
           .then(function (result) {
             res.json(result);

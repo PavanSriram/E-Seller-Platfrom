@@ -152,7 +152,7 @@ export default function AddDiscount(props) {
 
       <Stack sx={{ mt: 1 }} justifyContent="center" direction="row" spacing={2}>
         <Button variant="contained" color="primary" onClick={handleAdd}>
-          ADD
+          CHANGE
         </Button>
       </Stack>
     </Box>

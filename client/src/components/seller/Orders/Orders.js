@@ -348,6 +348,7 @@ export default function Orders() {
                       <TableCell align="right">{order.paymentId}</TableCell>
                       <TableCell align="right">{order.deliveryDate}</TableCell>
                       <TableCell align="right">
+                      <Link to="/seller/editorder" style={{color: "gray"}} state={{order: order}}><EditIcon /></Link>
                         <IconButton
                           edge="end"
                           aria-label="delete"

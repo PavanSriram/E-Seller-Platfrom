@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -30,10 +30,10 @@ function ItemCard(props) {
         )
         .then((res) => {
           // console.log(image);
-          console.log(res.data);
+          // console.log(res.data);
           if(res.data){
-            console.log(res.data.image);
-            setImage(res.data.image);
+            // console.log(res.data.images);
+            setImage(res.data.images);
           }
           // console.log(image);
         });
@@ -65,7 +65,28 @@ function ItemCard(props) {
   return (
     <Grid item xs={12} md={4} lg={3} spacing={3}>
       <Card sx={{ maxWidth: 345, maxHeight: 350 }}>
-        <img src={`${image[0]}`} height="200" width="230"/>
+        {/* {console.log("Hello: " + image)} */}
+        <img src={`${image && image[0]}`} height="180" width="230"/>
+
+        {/* <Box sx={{ ml: 1, mr: 1, mt: 2, whiteSpace: "pre-line" }}>
+              <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                  {image &&
+                    image.map((img) => <div className="carousel-item">
+                    <img src={img} className="d-block w-100" alt="alt"/>
+                  </div>)}
+                </div>
+                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span className="carousel-control-prev-icon carIcon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span className="carousel-control-next-icon carIcon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
+              </div>
+            </Box> */}
+
         {/* <div
           id="carouselExampleControls"
           className="carousel slide"

@@ -13,6 +13,9 @@ import Tracking from "./components/user/Tracking";
 import Fashion from "./components/user/categories/Fashion";
 import Electronics from "./components/user/categories/Electronics";
 import Sports from "./components/user/categories/Sports";
+import Vehicles from "./components/user/categories/Vehicles";
+import Books from "./components/user/categories/Books";
+import Others from "./components/user/categories/Others";
 import UserSignIn from "./components/user/UserSignIn";
 import UserRegister from "./components/user/UserRegister";
 import ProductPage from "./components/user/ProductPage"
@@ -59,6 +62,9 @@ function App() {
         <Route path='/sports' element={<UserDashboard child={<Sports />}/>} />
         <Route path='/electronics' element={<UserDashboard child={<Electronics />}/>}/>
         <Route path='/fashion' element={<UserDashboard child={<Fashion />}/>} />
+        <Route path='/vehicles' element={<UserDashboard child={<Vehicles />}/>} />
+        <Route path='/books' element={<UserDashboard child={<Books />}/>} />
+        <Route path='/others' element={<UserDashboard child={<Others />}/>} />
         <Route path='/user/signin' element={<UserSignIn setUser={setUser} />} />
         <Route path='/user/register' element={<UserRegister />} />
 

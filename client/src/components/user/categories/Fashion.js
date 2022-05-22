@@ -23,7 +23,7 @@ const Fashion = () => {
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
       
       <Grid container spacing={3}>
-        {fashionProducts.map((item) => (
+        {fashionProducts && fashionProducts.map((item) => (
           <ItemCard child={item} />
         ))}
       </Grid>

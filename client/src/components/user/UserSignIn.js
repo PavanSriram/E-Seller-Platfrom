@@ -171,12 +171,12 @@ export default function UserSignIn(props) {
 
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
+                <Link href="/seller/signin" variant="body2">
+                  Seller SignIn?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/user/register" variant="body2">
                   {"Don't have an account? Register"}
                 </Link>
               </Grid>

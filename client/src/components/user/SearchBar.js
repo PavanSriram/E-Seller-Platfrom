@@ -64,6 +64,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchBar(props) {
+
+  const [search, setSearch] = React.useState("");
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    props.setSearchValue(event.target.value);
+  }
+
   return (
     <Search>
       {/* <Button> */}
@@ -78,6 +86,7 @@ export default function SearchBar(props) {
         // value={props.setSearch()}
         onChange = {(event) => props.setSearchValue(event.target.value)}
       />
+      <Button variant="primary" onClick={handleSearch}>Search</Button>
     </Search>
   );
 }

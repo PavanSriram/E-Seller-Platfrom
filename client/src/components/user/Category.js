@@ -13,19 +13,27 @@ function Category(props) {
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3308/${props.category}`).then((res) => {
-        setProducts(res.data);
-        // console.log(res.data);
-      });
+      console.log(props.flag);
+      if(props.searchText.length === 0){
+        await axios.get(`http://localhost:3308/${props.category}/${props.flag}`).then((res) => {
+          setProducts(res.data);
+          // console.log(res.data);
+        });
+      }
+      else{
+        await axios.get(`http://localhost:3308/searchproducts/${props.searchText}/${props.flag}`).then((res) => {
+          setProducts(res.data);
+        });
+      }
     }
     fetchData();
-  }, []);
+  }, [props.searchText, props.flag]);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
-      
+    
       <Grid container spacing={3}>
-        {products.map((item) => (
+        {products.map((item) => (item.category.toLowerCase() === props.category &&
           <ItemCard key={key++} child={item} user={props.user}/>
         ))}
       </Grid>

@@ -29,7 +29,7 @@ function CartItem(props) {
         .then((res) => {
           console.log(image);
           console.log(res.data);
-          setImage(res.data.image);
+          setImage(res.data.images);
           // props.fetchCartData(cartItems);
           // console.log("Hello" + cartItems);
           console.log(image);

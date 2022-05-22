@@ -30,8 +30,102 @@ setInterval(() => {
 
 //--------------------------------------------------------Categories-------------------------------------------------
 
+app.get("/fashion/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Fashion" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Fashion"';
+  }
+  
+
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/electronics/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Electronics" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Electronics"';
+  }
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/vehicles/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Vehicles" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Vehicles"';
+  }
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/books/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Books" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Books"';
+  }
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/others/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Others" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Others"';
+  }
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/sports/:flag", (req, res) => {
+  let sql = "";
+  if(req.params.flag === true){
+    sql = 'SELECT DISTINCT * FROM Products WHERE category = "Sports" ORDER BY price DESC';
+  }
+  else{
+    sql = 'SELECT * FROM Products WHERE category = "Sports"';
+  }
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+
 app.get("/fashion", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Fashion"';
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Fashion" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Fashion"';
+  // }
+  
 
   connection.query(sql, (err, result) => {
     console.log(result);
@@ -40,8 +134,13 @@ app.get("/fashion", (req, res) => {
 });
 
 app.get("/electronics", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Electronics"';
-
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Electronics" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Electronics"';
+  // }
   connection.query(sql, (err, result) => {
     console.log(result);
     res.send(result);
@@ -49,8 +148,13 @@ app.get("/electronics", (req, res) => {
 });
 
 app.get("/vehicles", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Vechicles"';
-
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Vehicles" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Vehicles"';
+  // }
   connection.query(sql, (err, result) => {
     console.log(result);
     res.send(result);
@@ -58,8 +162,13 @@ app.get("/vehicles", (req, res) => {
 });
 
 app.get("/books", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Books"';
-
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Books" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Books"';
+  // }
   connection.query(sql, (err, result) => {
     console.log(result);
     res.send(result);
@@ -67,24 +176,32 @@ app.get("/books", (req, res) => {
 });
 
 app.get("/others", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Others"';
-
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Others" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Others"';
+  // }
   connection.query(sql, (err, result) => {
     console.log(result);
     res.send(result);
   });
 });
 
-app.get("/sports", (req, res) => {
-  const sql = 'SELECT * FROM Products WHERE category = "Sports"';
-
+app.get("/sports/", (req, res) => {
+  let sql = "";
+  // if(req.params.flag === true){
+  //   sql = 'SELECT DISTINCT * FROM Products WHERE category = "Sports" ORDER BY price DESC';
+  // }
+  // else{
+    sql = 'SELECT * FROM Products WHERE category = "Sports"';
+  // }
   connection.query(sql, (err, result) => {
     console.log(result);
     res.send(result);
   });
 });
-
-
 
 // ---------------------------------------------------Seller Products Page----------------------------------------------------------------
 
@@ -121,6 +238,33 @@ app.get("/allproducts/search/:sellerId/:searchBy/:text", (req, res) => {
                   (${req.params.searchBy} LIKE "%${req.params.text}%")`;
     
   console.log("SQL", sql);
+  connection.query(sql, (err, result) => {
+    console.log("res-", result);
+    res.send(result);
+  });
+});
+
+app.get("/searchproducts/:text/:flag", (req, res) => {
+  let sql;
+  console.log(typeof(req.params.flag));
+  if(req.params.flag === "true"){
+    console.log("-----true------");
+    sql = `SELECT *
+    FROM Products
+    WHERE (productName LIKE "%${req.params.text}%") or
+          (category LIKE "%${req.params.text}%") or
+          (brand LIKE "%${req.params.text}%") or
+          (price LIKE "%${req.params.text}%") ORDER BY price DESC`;
+  }
+  else{
+    console.log("-----flase------");
+    sql = `SELECT *
+    FROM Products
+    WHERE (productName LIKE "%${req.params.text}%") or
+          (category LIKE "%${req.params.text}%") or
+          (brand LIKE "%${req.params.text}%") or
+          (price LIKE "%${req.params.text}%")`;
+  }
   connection.query(sql, (err, result) => {
     console.log("res-", result);
     res.send(result);
@@ -1013,7 +1157,7 @@ async function main() {
           .findOne({ productName: req.params.productName, brand: req.params.brand, sellerId: req.params.sellerId })
           .then(function (result) {
             res.json(result);
-            console.log(result);
+            // console.log(result);
             // console.log("image successfully returned");
           });
       });

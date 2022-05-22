@@ -26,7 +26,7 @@ function Product(props) {
         .then((res) => {
           console.log(image);
           console.log(res.data);
-          setImage(res.data.image);
+          setImage(res.data.images);
           console.log(image);
         });
     }
@@ -60,7 +60,8 @@ function Product(props) {
             <p><b>Description</b> : {product.description}</p>
             <hr style={{height: "0.3px"}}/>
             <p><b>Images</b> : </p>
-            <Box sx={{ ml: 1, mr: 1, mt: 2, whiteSpace: "pre-line" }}>
+            <img src={image && image[0]}  alt="..." width="230" height="250"/>
+            {/* <Box sx={{ ml: 1, mr: 1, mt: 2, whiteSpace: "pre-line" }}>
               <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                 <div className="carousel-item active">
@@ -80,7 +81,7 @@ function Product(props) {
                   <span className="visually-hidden">Next</span>
                 </button>
               </div>
-            </Box>
+            </Box> */}
             <hr style={{height: "0.3px"}}/>
             <p><b>Number of Orders</b> : {product.numberOfOrders}</p>
             <hr style={{height: "0.3px"}}/>

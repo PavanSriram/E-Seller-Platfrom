@@ -119,37 +119,40 @@ function DashboardContent(props) {
 
   const mainListItems = (
     <React.Fragment>
-    <ListItemButton
-      onClick={() => {
-        navigate("/user/dashboard");
-      }}
-    >
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton>
-    <ListItemButton
-      onClick={() => {
-        navigate("/user/orders");
-      }}
-    >
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="My Orders" />
-    </ListItemButton>
-    
-    <ListItemButton
-      onClick={() => {
-        navigate("/user/cart");
-      }}
-    >
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Cart" />
-    </ListItemButton>
+      <ListItemButton
+        onClick={() => {
+          navigate("/user/dashboard");
+        }}
+      >
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+
+        <ListItemText primary="Dashboard" />
+      </ListItemButton>
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/user/orders");
+        }}
+      >
+        <ListItemIcon>
+          <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="My Orders" />
+        </ListItemButton>
+        
+        <ListItemButton
+          onClick={() => {
+            navigate("/user/cart");
+          }}
+        >
+        <ListItemIcon>
+          <ShoppingCartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Cart" />
+      </ListItemButton>
+
     <ListItemButton onClick={handleCategoryClick}>
       <ListItemIcon>
         <BarChartIcon />
@@ -298,7 +301,7 @@ const secondaryListItems = (
             >
               Dashboard
             </Typography>
-            <SearchBar setSearchValue = {() => {setSearchValue()}} />
+            {/* <SearchBar setSearchValue = {() => {setSearchValue()}} /> */}
             {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />

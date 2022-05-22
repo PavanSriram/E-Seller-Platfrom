@@ -7,7 +7,7 @@ import { Container } from "@mui/material";
 
 const Sports = () => {
 
-  const [sportsProducts, setSportsProducts] = useState([{}]);
+  const [sportsProducts, setSportsProducts] = useState([]);
 
   useEffect(() => {
     async function fetchData() {

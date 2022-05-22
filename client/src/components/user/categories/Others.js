@@ -5,14 +5,14 @@ import ItemCard from "../ItemCard";
 import  { Grid } from "@mui/material";
 import { Container } from "@mui/material";
 
-const Fashion = () => {
+const Others = () => {
 
-  const [fashionProducts, setFashionProducts] = useState([]);
+  const [otherProducts, setOtherProducts] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3308/fashion`).then((res) => {
-        setFashionProducts(res.data);
+      await axios.get(`http://localhost:3308/others`).then((res) => {
+        setOtherProducts(res.data);
         console.log(res.data);
       });
     }
@@ -23,7 +23,7 @@ const Fashion = () => {
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
       
       <Grid container spacing={3}>
-        {fashionProducts.map((item) => (
+        {otherProducts.map((item) => (
           <ItemCard child={item} />
         ))}
       </Grid>
@@ -31,4 +31,4 @@ const Fashion = () => {
   )
 }
 
-export default Fashion
+export default Others;

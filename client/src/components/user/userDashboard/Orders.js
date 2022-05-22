@@ -7,11 +7,12 @@ import axios from "axios";
 import { useEffect } from "react";
 
 function Orders(props) {
-  const [myOrders, setMyOrders] = useState([{}]);
+  const [myOrders, setMyOrders] = useState([]);
+  const [user, setUser] = useState(localStorage.getItem("userId"));
 
   useEffect(() => {
     async function fetchData() {
-      await axios.get(`http://localhost:3308/user/orders`).then((res) => {
+      await axios.get(`http://localhost:3308/user/orders/${user}`).then((res) => {
         setMyOrders(res.data);
         console.log(res.data);
       });

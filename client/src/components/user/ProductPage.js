@@ -9,6 +9,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
 
 function ProductPage(props) {
 
@@ -86,21 +88,39 @@ function ProductPage(props) {
             padding: "0px",
           }}
         >
+          {/* {console.log("hello" + location.state.image)} */}
+            {/* <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+              <div className="carousel-inner">
+                {
+                  location.state.image.map((img) => <div className="carousel-item">
+                  <img src={img} className="d-block w-100" width="200" height="230"/>
+                </div>)}
+              </div>
+              <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon carIcon" aria-hidden="true"></span>
+                <span className="visually-hidden">Previous</span>
+              </button>
+              <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span className="carousel-control-next-icon carIcon" aria-hidden="true"></span>
+                <span className="visually-hidden">Next</span>
+              </button>
+            </div> */}
+
           <img src={`${location.state.image}`} maxHeight="500" height="400" width="400"/>
         </Grid>
         <Grid item xs={8} sx={{ margin: "auto", width: "100%" }}>
           {/* <h1 style={{display: "flex", justifyContent: "center"}}> {location.state.item.child.title} </h1> */}
           <h4> Product Name: {location.state.item.child.productName} </h4>
-          <h4> Brand: {location.state.item.child.brand} </h4>
-          <h4> Price: {location.state.item.child.price} </h4>
+          <h5> Brand: {location.state.item.child.brand} </h5>
+          <h5> Price: {location.state.item.child.price} </h5>
           {parseInt(location.state.item.child.quantity) > 0 ? (
-            <h4>In Stock</h4>
+            <h5>In Stock</h5>
           ) : (
-            <h4>Out of Stock</h4>
+            <h5>Out of Stock</h5>
           )}
-          <h4> Discount: {location.state.item.child.discountId}0% </h4>
-          <h4> Description: {location.state.item.child.description} </h4>
-          <h4> Dimensions: {location.state.item.child.dimensions} inches </h4>
+          <h5> Discount: {location.state.item.child.discountId}0% </h5>
+          <h5> Description: {location.state.item.child.description} </h5>
+          <h5> Dimensions: {location.state.item.child.dimensions} inches </h5>
           <CardActions>
           <Button variant="contained" onClick={handleAddToCart} sx={{backgroundColor: "#2558F9", color: "white", paddingLeft: "20px", paddingRight: "20px"}}>
               Add to Cart

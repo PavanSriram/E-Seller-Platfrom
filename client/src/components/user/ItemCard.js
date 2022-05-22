@@ -29,10 +29,13 @@ function ItemCard(props) {
           `http://localhost:3308/getimage/${props.child.sellerId}/${props.child.brand}/${props.child.productName}`
         )
         .then((res) => {
-          console.log(image);
+          // console.log(image);
           console.log(res.data);
-          setImage(res.data.image);
-          console.log(image);
+          if(res.data){
+            console.log(res.data.image);
+            setImage(res.data.image);
+          }
+          // console.log(image);
         });
     }
     fetchData();
@@ -62,7 +65,8 @@ function ItemCard(props) {
   return (
     <Grid item xs={12} md={4} lg={3} spacing={3}>
       <Card sx={{ maxWidth: 345, maxHeight: 350 }}>
-        <div
+        <img src={`${image[0]}`} height="200" width="230"/>
+        {/* <div
           id="carouselExampleControls"
           className="carousel slide"
           data-bs-ride="carousel"
@@ -71,7 +75,7 @@ function ItemCard(props) {
             {image.map((img) => (
               <div className="carousel-item">
                 {/* <img src={img} className="d-block w-100"/> */}
-                <img
+                {/* <img
                   src={`${img}`}
                   className="d-block w-100"
                   maxHeight="100"
@@ -79,10 +83,10 @@ function ItemCard(props) {
                   width="230"
                   alt="dummyImage"
                 />
-              </div>
-            ))}
-          </div>
-          <button
+              </div> */}
+            {/* ))} */}
+          {/* </div> */}
+          {/* <button
             className="carousel-control-prev"
             type="button"
             data-bs-target="#carouselExampleControls"
@@ -106,7 +110,7 @@ function ItemCard(props) {
             ></span>
             <span className="visually-hidden">Next</span>
           </button>
-        </div>
+        </div> */}
 
         {/* <CardMedia
         component="img"
@@ -117,7 +121,7 @@ function ItemCard(props) {
 
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {props.child.productName.length > 15
+            {props.child.productName && props.child.productName.length > 15
               ? props.child.productName.slice(0, 15) + "..."
               : props.child.productName}
           </Typography>

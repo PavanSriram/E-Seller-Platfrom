@@ -48,6 +48,33 @@ app.get("/electronics", (req, res) => {
   });
 });
 
+app.get("/vehicles", (req, res) => {
+  const sql = 'SELECT * FROM Products WHERE category = "Vechicles"';
+
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/books", (req, res) => {
+  const sql = 'SELECT * FROM Products WHERE category = "Books"';
+
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.get("/others", (req, res) => {
+  const sql = 'SELECT * FROM Products WHERE category = "Others"';
+
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    res.send(result);
+  });
+});
+
 app.get("/sports", (req, res) => {
   const sql = 'SELECT * FROM Products WHERE category = "Sports"';
 
@@ -791,13 +818,13 @@ app.post("/user/check", (req, res) => {
   });
 });
 
-
-
-
-app.get("/user/orders", (req, res) => {
+app.get("/user/orders/:id", (req, res) => {
   const sql =  `SELECT * 
+                FROM Products,
+                (SELECT * 
                 FROM Orders 
-                WHERE userId = 1`;
+                WHERE userId = ${req.params.id}) AS T1
+                WHERE Products.pid = T1.pid`;
 
   connection.query(sql, (err, result) => {
     console.log(result);
@@ -980,7 +1007,7 @@ async function main() {
 
       app.get("/getimage/:sellerId/:brand/:productName", (req, res) => {
         // console.log("HELLO!!")
-        // console.log(req.params.sellerId);
+        console.log(req.params);
         const result = db
           .collection("images")
           .findOne({ productName: req.params.productName, brand: req.params.brand, sellerId: req.params.sellerId })

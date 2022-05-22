@@ -16,6 +16,7 @@ function CartItem(props) {
   const navigate = useNavigate();
 
   const [image, setImage] = useState('');
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     // console.log(props.child.productName);
@@ -29,6 +30,8 @@ function CartItem(props) {
           console.log(image);
           console.log(res.data);
           setImage(res.data.image);
+          // props.fetchCartData(cartItems);
+          // console.log("Hello" + cartItems);
           console.log(image);
         });
     }
@@ -59,8 +62,8 @@ function CartItem(props) {
           <Grid item xs={4}>
           <img src={`${image}`} height="230" width="200"/>
           </Grid>
-          <Grid item xs={8} sx={{display: "flex flex-col", justifyContent: "center", alignItems: "center", backgroundColor: "red"}}>
-          <div style={{display: "flex flex-col", justifyContent: "center", alignItems: "center"}}>
+          <Grid item xs={8} sx={{display: "flex flex-col", justifyContent: "center", alignItems: "center", position: "relative"}}>
+          <div style={{position: "absolute", justifyContent: "center", alignItems: "center", transform: "translate(50%, 50%)"}}>
           <Typography gutterBottom variant="h5" component="div">
             {props.child.productName}
           </Typography>
@@ -73,12 +76,13 @@ function CartItem(props) {
           <Typography variant="body2" color="text.secondary">
             Quantity: {props.child.quantity}
           </Typography>
-          </div>
-
           <div className="flex-row">
             <Button size="small" >More</Button>
             <Button size="small" onClick={handleRemove}>Remove</Button>
           </div>
+          </div>
+
+          
           
           
           </Grid>

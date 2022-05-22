@@ -191,6 +191,39 @@ function DashboardContent(props) {
       <ListItemText primary="Sports" />
     </ListItemButton>
     <ListItemButton
+    sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/Vehicles");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Vehicles" />
+    </ListItemButton>
+    <ListItemButton
+    sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/books");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Books" />
+    </ListItemButton>
+    <ListItemButton
+    sx={ dropDown===false ? { display: "none" } : {} }
+      onClick={() => {
+        navigate("/others");
+      }}
+    >
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Others" />
+    </ListItemButton>
+    <ListItemButton
       onClick={() => {
         navigate("/user/profile");
       }}

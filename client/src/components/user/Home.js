@@ -56,16 +56,19 @@ function Home(props) {
             alignItems: "center",
           }}
         >
+          {/* <CategoryDropdown />
           <CategoryDropdown />
-          <CategoryDropdown />
-          <CategoryDropdown />
+          <CategoryDropdown /> */}
         </Box>
       </Container>
 
       <Container>
-      <Category category="fashion" user={props.user}/>
+        <Category category="fashion" user={props.user}/>
         <Category category="electronics" user={props.user} />
-        {/* <Category category="sports" /> */}
+        <Category category="sports" user={props.user}/>
+        <Category category="vehicles" user={props.user}/>
+        <Category category="books" user={props.user}/>
+        <Category category="others" user={props.user}/>
       </Container>
         {/* {props.user} */}
       {/* <Category category="electronics"/>

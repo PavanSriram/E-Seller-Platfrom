@@ -40,11 +40,13 @@ function App() {
   const [seller, setSeller] = React.useState(localStorage.getItem("sellerId"));
   const [productInfo, setProductInfo] = React.useState();
 
+  const [searchValue, setSearchValue] = React.useState("");
+
   return (
     <Router>
       <Routes>
       <Route path="/" element={ <Navigate to="/user/signin" /> } />
-        <Route path='/user/dashboard' element={<UserDashboard child={<Home user={user} />}/>} />
+        <Route path='/user/dashboard' element={<UserDashboard child={<Home user={user} />} setSearchValue = {() => {setSearchValue()}}/>} />
         {/* <Route path='/user/category' element={<UserDashboard child={<Category />}/>} /> */}
         <Route path='/user/orders' element={<UserDashboard child={<UserOrders user={user}/>}/>} />
         <Route path='/user/cart' element={<UserDashboard child={<UserCart user={user}/>}/>} />

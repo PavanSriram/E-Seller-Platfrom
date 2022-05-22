@@ -5,7 +5,24 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-export default function PaymentForm() {
+export default function PaymentForm(props) {
+
+  let defaultValues = {
+    cardName: "",
+    cardNumber: "",
+    expDate: "",
+    cvv: "",
+  };
+
+  const [values, setValues] = React.useState(defaultValues);
+
+  const handleChange = (event) => {
+    // console.log(values);
+    setValues({...values, [event.target.name]: event.target.value});
+    // console.log(values);
+    props.callBack(values);
+  }
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -15,7 +32,8 @@ export default function PaymentForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="cardName"
+            name="cardName"
+            onChange={handleChange}
             label="Name on card"
             fullWidth
             autoComplete="cc-name"
@@ -25,7 +43,8 @@ export default function PaymentForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="cardNumber"
+            name="cardNumber"
+            onChange={handleChange}
             label="Card number"
             fullWidth
             autoComplete="cc-number"
@@ -35,7 +54,8 @@ export default function PaymentForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="expDate"
+            name="expDate"
+            onChange={handleChange}
             label="Expiry date"
             fullWidth
             autoComplete="cc-exp"
@@ -45,7 +65,8 @@ export default function PaymentForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="cvv"
+            name="cvv"
+            onChange={handleChange}
             label="CVV"
             helperText="Last three digits on signature strip"
             fullWidth

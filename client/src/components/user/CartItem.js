@@ -53,32 +53,37 @@ function CartItem(props) {
   }
 
   return (
-    <Grid item xs={12} md={4} lg={3} spacing={3}>
-      <Card sx={{ maxWidth: 345 }}>
-      
-      <img src={`${image}`} />
+    <Grid item xs={12} md={12} lg={12} spacing={3} sx={{display: "flex", backgroundColor: "white"}}>
+      {/* <Card sx={{ maxWidth: "auto" }}> */}
+        <Grid container >
+          <Grid item xs={4}>
+          <img src={`${image}`} height="230" width="200"/>
+          </Grid>
+          <Grid item xs={8} sx={{display: "flex flex-col", justifyContent: "center", alignItems: "center", backgroundColor: "red"}}>
+          <div style={{display: "flex flex-col", justifyContent: "center", alignItems: "center"}}>
+          <Typography gutterBottom variant="h5" component="div">
+            {props.child.productName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Price: {props.child.price}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Discount: {props.child.discountId}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Quantity: {props.child.quantity}
+          </Typography>
+          </div>
 
-      {/* <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image={URL.createObjectURL(`data:image/jpeg;base64,${image}`)}
-      /> */}
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {props.child.productName}
-          Product
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Price: 10000
-          Discount: 10%
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" >More</Button>
-        <Button size="small" onClick={handleRemove}>Remove</Button>
-      </CardActions>
-    </Card>
+          <div className="flex-row">
+            <Button size="small" >More</Button>
+            <Button size="small" onClick={handleRemove}>Remove</Button>
+          </div>
+          
+          
+          </Grid>
+        </Grid>
+    {/* </Card> */}
     </Grid>
   );
 }

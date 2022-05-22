@@ -788,6 +788,61 @@ app.get("/user/orders", (req, res) => {
   });
 });
 
+// ----------------------------------- user placing orders --------------------------------------------------------------
+app.post("/user/payment", (req, res) => {
+  console.log(req.body);
+
+  let sql = `SELECT * FROM Products WHERE pid = ${req.body.pid}`;
+  connection.query(sql, (err, result) => {
+    console.log(result);
+    if(result && result[0].quantity >= req.body.quantity){
+      sql = `INSERT INTO Payments (amount, paymentMode, paymentStatus) VALUES (${req.body.amount}, "${req.body.paymentMode}", "${req.body.paymentStatus}")`;
+
+      console.log(sql);
+      connection.query(sql, (err, result1) => {
+        console.log(result1);
+        console.log(result1.insertId);
+        // res.send(result);
+        sql = `INSERT INTO Orders (pid, sellerId, quantity, userId, orderDate, status, paymentId, deliveryDate, actualDeliveryDate)
+               VALUES (${req.body.pid}, ${req.body.sellerId}, ${req.body.quantity}, ${req.body.userId}, "${req.body.orderDate}", 
+                "${req.body.status}", ${result1.insertId}, "${req.body.deliveryDate}", "${req.body.actualDeliveryDate}")`;
+        connection.query(sql, (err, result2) => {
+          if(err){
+            console.log(err);
+          }
+          console.log(result2);
+          // res.send(result);
+          
+            sql = `UPDATE Products SET quantity = quantity - ${req.body.quantity}, numberOfOrders = numberOfOrders + 1 WHERE pid = ${req.body.pid}`;
+            connection.query(sql, (err, result3) => {
+              console.log(result3);
+              res.send(result3);
+            });
+        });
+      });
+    }
+    else{
+      console.log("Insufficient quantity");
+      res.send("Insufficient quantity");
+    }
+  });  
+});
+
+
+
+// app.post("/user/placeorder", (req, res) => {
+//   console.log(req.body);
+//   const sql =  `INSERT 
+//                 INTO Orders (pid, sellerId, quantity, userId, orderDate, status, paymentId, deliveryDate, actualDeliveryDate) 
+//                 VALUES (${parseInt(req.body.pid)}, ${parseInt(req.body.sellerId)}, ${parseInt(req.body.quantity)}, ${parseInt(req.body.userId)}, "${req.body.orderDate}", "${req.body.status}", ${req.body.paymentId}, "${req.body.deliveryDate}", "${req.body.actualDeliveryDate}")`;
+
+//   console.log(sql);
+//   connection.query(sql, (err, result) => {
+//     console.log(result);
+//     res.send(result);
+//   });
+// });
+
 // //check this once
 // app.get("/cart", (req, res) => {
 
@@ -824,6 +879,7 @@ app.post("/user/update", (req, res) => {
 //----------------------------------------------User Cart MongoDB-------------------------------------------------------------
 
 const { MongoClient } = require("mongodb");
+const { reset } = require("nodemon");
 let client;
 async function main() {
   const uri =

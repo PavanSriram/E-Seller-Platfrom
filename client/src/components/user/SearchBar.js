@@ -63,7 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchBar() {
+export default function SearchBar(props) {
   return (
     <Search>
       {/* <Button> */}
@@ -75,6 +75,8 @@ export default function SearchBar() {
       <StyledInputBase
         placeholder="Search"
         inputProps={{ "aria-label": "search" }}
+        // value={props.setSearch()}
+        onChange = {(event) => props.setSearchValue(event.target.value)}
       />
     </Search>
   );

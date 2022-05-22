@@ -56,24 +56,26 @@ function ItemCard(props) {
 
   return (
     <Grid item xs={12} md={4} lg={3} spacing={3}>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ maxWidth: 345, maxHeight: 350 }}>
       
-      <img src={`${image}`} />
+      <img src={`${image}`} maxHeight="100" height="200" width="230"/>
 
       {/* <CardMedia
         component="img"
         alt="green iguana"
         height="140"
-        image={URL.createObjectURL(`data:image/jpeg;base64,${image}`)}
+        image={URL.createObjectURL(`${image}`)}
       /> */}
+
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {props.child.productName}
-          Product
+          {props.child.productName.length > 15 ? props.child.productName.slice(0, 15) + "..." : props.child.productName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Price: 10000
-          Discount: 10%
+          Price: {props.child.price}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Discount: {props.child.discountId}
         </Typography>
       </CardContent>
       <CardActions>

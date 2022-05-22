@@ -5,7 +5,40 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-export default function AddressForm() {
+export default function AddressForm(props) {
+
+  const [selected, setSelected] = React.useState(true);
+
+  let defaultValues = {
+    firstName: "",
+    lastName: "",
+    address1: "",
+    address2: "",
+    city: "",
+    state: "",
+    postal: "",
+    country: "",
+  };
+
+
+  const [values, setValues] = React.useState(defaultValues);
+
+  const handleSelect = async () => {
+    setSelected(!selected);
+
+    if(selected){
+
+    }
+  }
+
+  const handleChange = (event) => {
+    // console.log(values);
+    setValues({...values, [event.target.name]: event.target.value});
+    // console.log(values);
+
+    props.callBack(values);
+  }
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -18,6 +51,7 @@ export default function AddressForm() {
             id="firstName"
             name="firstName"
             label="First name"
+            onChange={handleChange}
             fullWidth
             autoComplete="given-name"
             variant="standard"
@@ -28,6 +62,7 @@ export default function AddressForm() {
             required
             id="lastName"
             name="lastName"
+            onChange={handleChange}
             label="Last name"
             fullWidth
             autoComplete="family-name"
@@ -39,6 +74,7 @@ export default function AddressForm() {
             required
             id="address1"
             name="address1"
+            onChange={handleChange}
             label="Address line 1"
             fullWidth
             autoComplete="shipping address-line1"
@@ -49,6 +85,7 @@ export default function AddressForm() {
           <TextField
             id="address2"
             name="address2"
+            onChange={handleChange}
             label="Address line 2"
             fullWidth
             autoComplete="shipping address-line2"
@@ -60,6 +97,7 @@ export default function AddressForm() {
             required
             id="city"
             name="city"
+            onChange={handleChange}
             label="City"
             fullWidth
             autoComplete="shipping address-level2"
@@ -70,6 +108,7 @@ export default function AddressForm() {
           <TextField
             id="state"
             name="state"
+            onChange={handleChange}
             label="State/Province/Region"
             fullWidth
             variant="standard"
@@ -79,7 +118,8 @@ export default function AddressForm() {
           <TextField
             required
             id="zip"
-            name="zip"
+            name="postal"
+            onChange={handleChange}
             label="Zip / Postal code"
             fullWidth
             autoComplete="shipping postal-code"
@@ -91,6 +131,7 @@ export default function AddressForm() {
             required
             id="country"
             name="country"
+            onChange={handleChange}
             label="Country"
             fullWidth
             autoComplete="shipping country"
@@ -99,8 +140,8 @@ export default function AddressForm() {
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
-            control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-            label="Use this address for payment details"
+            control={<Checkbox color="secondary" name="saveAddress" value="yes" onChange={handleSelect}/>}
+            label="Save this as default address"
           />
         </Grid>
       </Grid>

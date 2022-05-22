@@ -36,7 +36,7 @@ const Cart = () => {
     <Container maxWidth="lg" sx={{ mt: 2, mb: 2, "& > :not(style)": { m: 1 } }}>
       <Grid container spacing={3}>
         {cartItems.map((item) => (
-          <Grid item xs={15}>
+          <Grid item xs={12} >
             <CardItem child={item} user={userId} fetchCartData = {fetchData} />
           </Grid>
         )

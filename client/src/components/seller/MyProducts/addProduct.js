@@ -25,7 +25,7 @@ export default function AddProduct(props) {
   const categories = ["Electronics", "Fashion", "Sports", "Vehicles", "Books", "Other"];
   const subCategories = {
     "Electronics":  ["Mobiles and Computers", "Televisions", "Audio", "Cameras", "Air Conditioners", "Refrigerators", "Washing Machines", "Home and Kitchen Applainces", "Other"],
-    "Fashion": ["Men's Clothing", "Women's Clothing", "Shoes", "Watches", "Bags and Luggage", "Jwellery", "other"],
+    "Fashion": ["Men's Clothing", "Women's Clothing", "Shoes", "Watches", "Bags and Luggage", "Jwellery", "Other"],
     "Sports": ["Sports Accessories", "Yoga", "Fitness Accessories", "Cardio equipment", "Other"],
     "Vehicles": ["Car Accessories", "Car Parts", "Bike Care", "Cycles", "Other"],
     "Books": ["Fiction", "Adventure", "Children's Books", "School Textbooks", "Language"],
@@ -65,11 +65,10 @@ export default function AddProduct(props) {
   const [category, setCategory] = React.useState(categories[0]);
   const [subCategory, setSubCategory] = React.useState(subCategories[categories[0]][0]);
 
-  const handleCategoryDropdown = (event) => {
+  const handleCategoryDropdown = async (event) => {
     setCategory(event.target.value);
-    setValues({ ...values, ["category"]: event.target.value });
     setSubCategory(subCategories[event.target.value][0]);
-    setValues({ ...values, ["subCategory"]: subCategories[event.target.value][0] });
+    setValues({ ...values, ["subCategory"]: subCategories[event.target.value][0], ["category"]: event.target.value });
   }
   const handleSubCategoryDropdown = (event) => {
     setSubCategory(event.target.value);
@@ -257,7 +256,7 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.category}
               label="Select Category"
-              value={values.category}
+              value={category}
               onChange={handleCategoryDropdown}
               //   helperText="Please select your currency"
             >
@@ -275,7 +274,7 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.subCategory}
               label="Select Sub Category"
-              value={values.subCategory}
+              value={subCategory}
               onChange={handleSubCategoryDropdown}
             >
               {subCategories[category].map((option) => (

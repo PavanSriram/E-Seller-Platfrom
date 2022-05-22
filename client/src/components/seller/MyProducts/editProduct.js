@@ -66,9 +66,8 @@ export default function EditProduct(props) {
 
   const handleCategoryDropdown = (event) => {
     setCategory(event.target.value);
-    setValues({ ...values, ["category"]: event.target.value });
     setSubCategory(subCategories[event.target.value][0]);
-    setValues({ ...values, ["subCategory"]: subCategories[event.target.value][0] });
+    setValues({ ...values, ["subCategory"]: subCategories[event.target.value][0], ["category"]: event.target.value });
   }
   const handleSubCategoryDropdown = (event) => {
     setSubCategory(event.target.value);
@@ -220,7 +219,7 @@ export default function EditProduct(props) {
               fullWidth
               error={errors.category}
               label="Select Category"
-              value={values.category}
+              value={category}
               onChange={handleCategoryDropdown}
               //   helperText="Please select your currency"
             >
@@ -238,7 +237,7 @@ export default function EditProduct(props) {
               fullWidth
               error={errors.subCategory}
               label="Select Sub Category"
-              value={values.subCategory}
+              value={subCategory}
               onChange={handleSubCategoryDropdown}
             >
               {subCategories[category].map((option) => (

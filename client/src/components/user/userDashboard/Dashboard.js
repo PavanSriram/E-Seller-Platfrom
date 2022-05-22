@@ -232,6 +232,8 @@ const secondaryListItems = (
   </React.Fragment>
 );
 
+    const [searchValue, setSearchValue] = useState("");
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -263,7 +265,7 @@ const secondaryListItems = (
             >
               Dashboard
             </Typography>
-            <SearchBar />
+            <SearchBar setSearchValue = {() => {setSearchValue()}} />
             {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />

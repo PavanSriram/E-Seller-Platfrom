@@ -257,7 +257,7 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.category}
               label="Select Category"
-              value={category}
+              value={values.category}
               onChange={handleCategoryDropdown}
               //   helperText="Please select your currency"
             >
@@ -275,7 +275,7 @@ export default function AddProduct(props) {
               fullWidth
               error={errors.subCategory}
               label="Select Sub Category"
-              value={subCategory}
+              value={values.subCategory}
               onChange={handleSubCategoryDropdown}
             >
               {subCategories[category].map((option) => (
@@ -372,9 +372,8 @@ export default function AddProduct(props) {
               <div className="carousel-inner">
                 {
                   values.images.map((img) => <div className="carousel-item">
-                  <img src={img} className="d-block w-100" alt={buyImage}/>
-                </div>)
-                }
+                  <img src={img} className="d-block w-100"/>
+                </div>)}
               </div>
               <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                 <span className="carousel-control-prev-icon carIcon" aria-hidden="true"></span>

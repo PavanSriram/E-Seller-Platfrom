@@ -15,6 +15,9 @@ import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
+import buyImage from "./defaultImage.png"
 
 export default function AddProduct(props) {
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -35,13 +38,15 @@ export default function AddProduct(props) {
     title: "",
     description: "",
     category: categories[0],
-    subCategory: subCategories[0],
+    subCategory: subCategories[categories[0]][0],
     price: "",
     quantity: "",
     discountId: "",
     dimensions: "",
     numberOfOrders: 0,
+    images: []
   };
+
   
   
   const [values, setValues] = React.useState(defaultValues);
@@ -115,6 +120,7 @@ export default function AddProduct(props) {
     }
 
     setErrors(newErrors);
+    let pid_;
     if(flag === true){
       values.numberOfOrders = 0;
       await axios.post("http://localhost:3308/seller/addProduct", values).then((res) => {
@@ -126,9 +132,43 @@ export default function AddProduct(props) {
           setAlertOpenError(true);
         }
       });
-      
+    }
+    if(flag === true){
+      await axios.post(`http://localhost:3308/addimage`, values).then((res) => {
+        // console.log("hi", res);
+        if (res.data.length !== 0) {
+          setValues(defaultValues);
+          setAlertOpen(true);
+        } else {
+          setAlertOpenError(true);
+        }
+      });
     }
   };
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+  };
+
+  const handleImage = async (e) => {
+    console.log(e.target.files);
+    const img = await convertBase64(e.target.files[0]); 
+    const a = JSON.parse(JSON.stringify(values));
+    a.images.push(img);
+    setValues(a);
+  }
 
   return (
     <Box sx={{ justifyContent: "center", mt: 3, ml: 15, mr: 15 }}>
@@ -320,10 +360,38 @@ export default function AddProduct(props) {
             onChange={handleChange}
             // defaultValue=""
           />
+
+          <Box sx={{ ml: 1, mr: 1, mt: 2, whiteSpace: "pre-line" }}>
+            <label for="addImage" className="form-label labels">
+              Add Images of your Add
+            </label>
+            <div className="input-group mb-3">
+              <input type="file" name="ImageInput" className={"form-control"} id="inputImageFile" onChange={(e) => {handleImage(e);}} required />
+            </div>
+            <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+              <div className="carousel-inner">
+              <div className="carousel-item active">
+                <img src={buyImage} className="d-block w-100" alt="..."/>
+              </div>
+                {
+                  values.images.map((img) => <div className="carousel-item">
+                  <img src={img} className="d-block w-100" alt={buyImage}/>
+                </div>)}
+              </div>
+              <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon carIcon" aria-hidden="true"></span>
+                <span className="visually-hidden">Previous</span>
+              </button>
+              <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span className="carousel-control-next-icon carIcon" aria-hidden="true"></span>
+                <span className="visually-hidden">Next</span>
+              </button>
+            </div>
+            </Box>
         </CardContent>
       </Card>
 
-      <Stack sx={{ mt: 1 }} justifyContent="center" direction="row" spacing={2}>
+      <Stack sx={{ mt: 1, mb: 2 }} justifyContent="center" direction="row" spacing={2}>
         <Button variant="contained" color="primary" onClick={handleAdd}>
           ADD
         </Button>

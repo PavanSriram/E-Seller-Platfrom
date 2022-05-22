@@ -56,11 +56,6 @@ export default function Payments() {
       order: "asc",
     },
     {
-      id: "orderId",
-      label: "Order Id",
-      order: "asc",
-    },
-    {
       id: "amount",
       label: "Amount",
       order: "asc",
@@ -78,7 +73,6 @@ export default function Payments() {
   ]);
 
   const [payments, setPayments] = React.useState([{
-    orderId:"",
     paymentId: "",
     amount: "",
     paymentMode: "",
@@ -256,7 +250,6 @@ export default function Payments() {
                         {payment.paymentId}
                       </TableCell>
                       
-                      <TableCell align="right">{payment.orderId}</TableCell>
                       <TableCell align="right">{payment.amount}</TableCell>
                       <TableCell align="right">{payment.paymentMode}</TableCell>
                       <TableCell align="right"><Chip variant="outlined" color="info" label={payment.paymentStatus} size="small" /></TableCell>

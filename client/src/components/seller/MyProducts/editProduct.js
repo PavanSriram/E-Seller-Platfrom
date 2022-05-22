@@ -23,8 +23,15 @@ export default function EditProduct(props) {
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertOpenError, setAlertOpenError] = React.useState(false);
-  const categories = ["A", "B", "C", "D", "E"];
-  const subCategories = ["A", "B", "C", "D", "E"];
+  const categories = ["Electronics", "Fashion", "Sports", "Vehicles", "Books", "Other"];
+  const subCategories = {
+    "Electronics":  ["Mobiles and Computers", "Televisions", "Audio", "Cameras", "Air Conditioners", "Refrigerators", "Washing Machines", "Home and Kitchen Applainces", "Other"],
+    "Fashion": ["Men's Clothing", "Women's Clothing", "Shoes", "Watches", "Bags and Luggage", "Jwellery", "other"],
+    "Sports": ["Sports Accessories", "Yoga", "Fitness Accessories", "Cardio equipment", "Other"],
+    "Vehicles": ["Car Accessories", "Car Parts", "Bike Care", "Cycles", "Other"],
+    "Books": ["Fiction", "Adventure", "Children's Books", "School Textbooks", "Language"],
+    "Other": ["Other"]
+  };
   let defaultValues = {
     sellerId: props.sellerId,
     productName: "",
@@ -32,7 +39,7 @@ export default function EditProduct(props) {
     title: "",
     description: "",
     category: categories[0],
-    subCategory: subCategories[0],
+    subCategory: subCategories[categories[0]][0],
     price: "",
     quantity: "",
     discountId: "",
@@ -55,11 +62,13 @@ export default function EditProduct(props) {
 
   
   const [category, setCategory] = React.useState(categories[0]);
-  const [subCategory, setSubCategory] = React.useState(subCategories[0]);
+  const [subCategory, setSubCategory] = React.useState(subCategories[categories[0]][0]);
 
   const handleCategoryDropdown = (event) => {
     setCategory(event.target.value);
     setValues({ ...values, ["category"]: event.target.value });
+    setSubCategory(subCategories[event.target.value][0]);
+    setValues({ ...values, ["subCategory"]: subCategories[event.target.value][0] });
   }
   const handleSubCategoryDropdown = (event) => {
     setSubCategory(event.target.value);
@@ -115,7 +124,6 @@ export default function EditProduct(props) {
       await axios.post(`http://localhost:3308/seller/editproduct/${location.state.product.pid}`, values).then((res) => {
         console.log("hi", res);
         if (res.data.length !== 0) {
-          setValues(defaultValues);
           setAlertOpen(true);
         } else {
           setAlertOpenError(true);
@@ -233,7 +241,7 @@ export default function EditProduct(props) {
               value={subCategory}
               onChange={handleSubCategoryDropdown}
             >
-              {subCategories.map((option) => (
+              {subCategories[category].map((option) => (
                 <MenuItem key={option} value={option}>
                   {option}
                 </MenuItem>
@@ -320,7 +328,7 @@ export default function EditProduct(props) {
 
       <Stack sx={{ mt: 1 }} justifyContent="center" direction="row" spacing={2}>
         <Button variant="contained" color="primary" onClick={handleAdd}>
-          ADD
+          CHANGE
         </Button>
       </Stack>
     </Box>

@@ -11,9 +11,7 @@ function Order(props) {
           <Typography>
             <p><b>Order Id</b> : {order.orderId}</p>
             <hr style={{height: "0.3px"}}/>
-            <p><b>Product Name</b> : {order.productName}</p>
-            <hr style={{height: "0.3px"}}/>
-            <p><b>Brand</b> : {order.brand}</p>
+            <p><b>pid</b> : {order.pid}</p>
             <hr style={{height: "0.3px"}}/>
             <p><b>Quantity</b> : {order.quantity}</p>
             <hr style={{height: "0.3px"}}/>

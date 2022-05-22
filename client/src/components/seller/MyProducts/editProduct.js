@@ -220,7 +220,7 @@ export default function EditProduct(props) {
               fullWidth
               error={errors.category}
               label="Select Category"
-              value={category}
+              value={values.category}
               onChange={handleCategoryDropdown}
               //   helperText="Please select your currency"
             >
@@ -238,7 +238,7 @@ export default function EditProduct(props) {
               fullWidth
               error={errors.subCategory}
               label="Select Sub Category"
-              value={subCategory}
+              value={values.subCategory}
               onChange={handleSubCategoryDropdown}
             >
               {subCategories[category].map((option) => (
